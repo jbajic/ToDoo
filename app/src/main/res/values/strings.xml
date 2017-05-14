@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ToDoo</string>
+    <string name="example_mail">user@mail.com</string>
+    <string name="example_password">*****</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
 </resources>

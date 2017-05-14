@@ -8,4 +8,39 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--
+        Basic Layouts styles
+    -->
+
+    <style name="MatchParent">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="WrapContent">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="MatchWidth">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="MatchHeight">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="LogoTextStyle" parent="MatchWidth">
+        <item name="android:textSize">@dimen/big1</item>
+        <item name="android:textColor">@color/pinkPantherColor</item>
+    </style>
+
+    <!-- Button styles -->
+    <style name="PinkButtonStyle" parent="WrapContent">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/round_border</item>
+    </style>
+
 </resources>
