@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -21,20 +20,20 @@ import org.json.JSONObject;
  * Created by jure on 14.05.17..
  */
 
-public class LoginService {
+public class APIService {
 
-    private static LoginService loginService;
+    private static APIService APIService;
     private Activity activity;
     private VolleyRequestQueue volleyRequestQueue;
 
-    public static synchronized LoginService getInstance(Activity activity) {
-        if(loginService == null) {
-            loginService = new LoginService(activity);
+    public static synchronized APIService getInstance(Activity activity) {
+        if(APIService == null) {
+            APIService = new APIService(activity);
         }
-        return loginService;
+        return APIService;
     }
 
-    private LoginService(Activity activity) {
+    private APIService(Activity activity) {
         this.activity = activity;
     }
 
@@ -48,12 +47,10 @@ public class LoginService {
             e.printStackTrace();
         }
 
-        requestListener.started("Started");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                 AppConstants.API_BASE_URL + AppConstants.ENDPOINT_LOGIN, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e("Reposnose", String.valueOf(response));
                 try {
                     String jwt = response.getString(AppConstants.KEY_JWT);
 
@@ -65,6 +62,7 @@ public class LoginService {
                         editor.putString(AppConstants.KEY_EMAIL, email);
                         editor.putString(AppConstants.KEY_PASSWORD, password);
                         editor.commit();
+                        requestListener.finished("success");
                     } else {
                         requestListener.failed("Login failed");
                     }
@@ -75,7 +73,41 @@ public class LoginService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("ERROR RES", error.getMessage());
+                requestListener.failed(error.getMessage());
+            }
+        });
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void register(final String email, final String password, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_EMAIL, email);
+            jsonObject.put(AppConstants.KEY_PASSWORD, password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_REGISTER, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Email is taken");
+                    } else {
+                        requestListener.finished("success");
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
                 requestListener.failed(error.getMessage());
             }
         });

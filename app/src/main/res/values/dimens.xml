@@ -2,15 +2,15 @@
 <resources>
 
 
-    <dimen name="small1">6sp</dimen>
-    <dimen name="small2">8sp</dimen>
-    <dimen name="small3">10sp</dimen>
-    <dimen name="medium1">16sp</dimen>
-    <dimen name="medium2">18sp</dimen>
-    <dimen name="medium3">20sp</dimen>
-    <dimen name="big1">26sp</dimen>
-    <dimen name="big2">28sp</dimen>
-    <dimen name="big3">30sp</dimen>
+    <dimen name="smallTextSize1">6sp</dimen>
+    <dimen name="smallTextSize12">8sp</dimen>
+    <dimen name="smallTextSize13">10sp</dimen>
+    <dimen name="mediumTextSize11">16sp</dimen>
+    <dimen name="mediumTextSize12">18sp</dimen>
+    <dimen name="mediumTextSize13">20sp</dimen>
+    <dimen name="bigTextSize11">26sp</dimen>
+    <dimen name="bigTextSize12">28sp</dimen>
+    <dimen name="bigTextSize13">30sp</dimen>
 
     <dimen name="smallPadding1">5dp</dimen>
     <dimen name="smallPadding2">10dp</dimen>

@@ -13,6 +13,7 @@ public final class AppConstants {
     /**
      * API KEYS
      */
+    public static final String KEY_STATUS = "status";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_JWT = "jwt";

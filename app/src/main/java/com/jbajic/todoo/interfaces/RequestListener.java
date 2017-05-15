@@ -5,7 +5,6 @@ package com.jbajic.todoo.interfaces;
  */
 
 public interface RequestListener {
-    void started(String message);
 
     void failed(String message);
 

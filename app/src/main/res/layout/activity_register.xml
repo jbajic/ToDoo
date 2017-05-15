@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchParent"
-    android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.jbajic.todoo.LoginActivity">
+    android:gravity="center"
+    tools:context="com.jbajic.todoo.RegisterActivity">
 
     <TextView
         style="@style/LogoTextStyle"
-        android:text="@string/login" />
+        android:text="@string/register" />
 
     <LinearLayout
         style="@style/MatchWidth"
@@ -21,14 +21,14 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:text="@string/email" />
 
             <EditText
                 android:id="@+id/et_email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
+                android:layout_weight="3"
                 android:hint="@string/example_mail"
                 android:inputType="textEmailAddress" />
 
@@ -39,14 +39,32 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:text="@string/password" />
 
             <EditText
                 android:id="@+id/et_password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
+                android:layout_weight="3"
+                android:hint="@string/example_password"
+                android:inputType="textPassword" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/MatchWidth">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/password_confirm" />
+
+            <EditText
+                android:id="@+id/et_password_confirm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
                 android:hint="@string/example_password"
                 android:inputType="textPassword" />
 
@@ -57,24 +75,7 @@
     <Button
         android:id="@+id/bt_login"
         style="@style/PinkButtonStyle"
-        android:text="@string/sign_in" />
+        android:text="@string/sign_up" />
 
-    <LinearLayout
-        style="@style/MatchWidth"
-        android:layout_marginTop="@dimen/mediumPadding2"
-        android:gravity="center">
-
-        <TextView
-            style="@style/WrapContent"
-            android:text="@string/no_account" />
-
-        <Button
-            style="@style/WrapContent"
-            android:background="@android:color/transparent"
-            android:id="@+id/bt_register"
-            android:textColor="@color/colorPrimary"
-            android:text="@string/register" />
-
-    </LinearLayout>
 
 </LinearLayout>

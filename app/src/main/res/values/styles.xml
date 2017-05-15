@@ -33,8 +33,10 @@
     </style>
 
     <style name="LogoTextStyle" parent="MatchWidth">
-        <item name="android:textSize">@dimen/big1</item>
+        <item name="android:textSize">@dimen/bigTextSize11</item>
         <item name="android:textColor">@color/pinkPantherColor</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <!-- Button styles -->
