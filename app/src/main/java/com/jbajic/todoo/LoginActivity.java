@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
-        SharedPreferences sharedPreferences = getSharedPreferences(AppConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     @OnClick({R.id.bt_register, R.id.bt_login})
@@ -60,7 +59,9 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void finished(String message) {
-                            Log.e("Finished", message);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
                     });
                 }
