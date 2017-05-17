@@ -9,23 +9,20 @@ public class User {
     private Long id;
     private Long serverId;
     private String email;
-    private String imagePath;
     private String username;
     private Boolean isMe;
 
-    public User(Long id, Long serverId, String email, String imagePath, String username, Boolean isMe) {
+    public User(Long id, Long serverId, String email, String username, Boolean isMe) {
         this.id = id;
         this.serverId = serverId;
         this.email = email;
-        this.imagePath = imagePath;
         this.username = username;
         this.isMe = isMe;
     }
 
-    public User(Long serverId, String email, String imagePath, String username, Boolean isMe) {
+    public User(Long serverId, String email, String username, Boolean isMe) {
         this.serverId = serverId;
         this.email = email;
-        this.imagePath = imagePath;
         this.username = username;
         this.isMe = isMe;
     }
@@ -48,14 +45,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     public String getUsername() {
