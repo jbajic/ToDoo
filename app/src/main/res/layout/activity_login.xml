@@ -1,79 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MatchParent"
-    android:gravity="center"
-    android:orientation="vertical"
+    style="@style/MatchParentVertical"
     tools:context="com.jbajic.todoo.LoginActivity">
 
-    <TextView
-        style="@style/LogoTextStyle"
-        android:text="@string/login" />
+    <include layout="@layout/toolbar" />
 
-    <LinearLayout
-        style="@style/MatchWidth"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/bigPadding1">
-
-        <LinearLayout style="@style/MatchWidth">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="@string/email" />
-
-            <EditText
-                android:id="@+id/et_email"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:hint="@string/example_mail"
-                android:inputType="textEmailAddress" />
-
-        </LinearLayout>
-
-        <LinearLayout style="@style/MatchWidth">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="@string/password" />
-
-            <EditText
-                android:id="@+id/et_password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:hint="@string/example_password"
-                android:inputType="textPassword" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/bt_login"
-        style="@style/PinkButtonStyle"
-        android:text="@string/sign_in" />
-
-    <LinearLayout
-        style="@style/MatchWidth"
-        android:layout_marginTop="@dimen/mediumPadding2"
-        android:gravity="center">
+    <LinearLayout style="@style/MatchParentVerticalCenter">
 
         <TextView
-            style="@style/WrapContent"
-            android:text="@string/no_account" />
+            style="@style/LogoTextStyle"
+            android:text="@string/login" />
+
+        <LinearLayout
+            style="@style/MatchWidth"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/bigPadding1">
+
+            <LinearLayout style="@style/MatchWidth">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/email" />
+
+                <EditText
+                    android:id="@+id/et_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:hint="@string/example_mail"
+                    android:inputType="textEmailAddress" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/MatchWidth">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/password" />
+
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:hint="@string/example_password"
+                    android:inputType="textPassword" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <Button
-            style="@style/WrapContent"
-            android:background="@android:color/transparent"
-            android:id="@+id/bt_register"
-            android:textColor="@color/colorPrimary"
-            android:text="@string/register" />
+            android:id="@+id/bt_login"
+            style="@style/PinkButtonStyle"
+            android:text="@string/sign_in" />
+
+        <LinearLayout
+            style="@style/MatchWidth"
+            android:layout_marginTop="@dimen/mediumPadding2"
+            android:gravity="center">
+
+            <TextView
+                style="@style/WrapContent"
+                android:text="@string/no_account" />
+
+            <Button
+                android:id="@+id/bt_register"
+                style="@style/WrapContent"
+                android:background="@android:color/transparent"
+                android:text="@string/register"
+                android:textColor="@color/colorPrimary" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -1,10 +1,16 @@
 package com.jbajic.todoo;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jbajic.todoo.interfaces.RequestListener;
@@ -22,17 +28,29 @@ public class RegisterActivity extends AppCompatActivity {
     EditText etPassword;
     @InjectView(R.id.et_password_confirm)
     EditText etPasswordConfirm;
-    @InjectView(R.id.bt_login)
-    Button btLogin;
+    @InjectView(R.id.bt_register)
+    Button btRegister;
+    @InjectView(R.id.my_toolbar)
+    Toolbar myToolbar;
+    @InjectView(R.id.pb_progress_bar)
+    ProgressBar pbProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.inject(this);
+
+        setSupportActionBar(myToolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar actionBar = getSupportActionBar();
+        // Enable the Up button
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
-    @OnClick(R.id.bt_login)
+    @OnClick(R.id.bt_register)
     public void onViewClicked() {
         String email = String.valueOf(etEmail.getText());
         String password = String.valueOf(etPassword.getText());
@@ -47,15 +65,21 @@ public class RegisterActivity extends AppCompatActivity {
             etPassword.setError(getResources().getString(R.string.error_password));
             etPasswordConfirm.setError(getResources().getString(R.string.error_password));
         } else {
+            pbProgressBar.setVisibility(View.VISIBLE);
+            btRegister.setVisibility(View.GONE);
             APIService registerService = APIService.getInstance(this);
             registerService.register(email, password, new RequestListener() {
                 @Override
                 public void failed(String message) {
                     Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+                    pbProgressBar.setVisibility(View.GONE);
+                    btRegister.setVisibility(View.VISIBLE);
+                    Log.e("FAILED", message);
                 }
 
                 @Override
                 public void finished(String message) {
+                    Log.e("FINISHED", message);
                     RegisterActivity.this.finish();
                 }
             });

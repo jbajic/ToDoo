@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,12 +31,25 @@ public class LoginActivity extends AppCompatActivity {
     Button btLogin;
     @InjectView(R.id.bt_register)
     Button btRegister;
+    @InjectView(R.id.my_toolbar)
+    Toolbar myToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
+
+        setSupportActionBar(myToolbar);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(AppConstants.SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(AppConstants.KEY_JWT) && sharedPreferences.contains(AppConstants.KEY_EMAIL)
+                && sharedPreferences.contains(AppConstants.KEY_PASSWORD)) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @OnClick({R.id.bt_register, R.id.bt_login})
@@ -47,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                 String password = String.valueOf(etPassword.getText());
                 if (email.isEmpty()) {
                     etEmail.setError(getResources().getString(R.string.error_missing, "Email"));
-                } else if(password.isEmpty()) {
+                } else if (password.isEmpty()) {
                     etPassword.setError(getResources().getString(R.string.error_missing, "Email"));
                 } else {
                     APIService loginService = APIService.getInstance(this);

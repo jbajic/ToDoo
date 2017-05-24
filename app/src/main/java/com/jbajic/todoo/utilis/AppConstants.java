@@ -8,7 +8,7 @@ public final class AppConstants {
 
     public static final String SHARED_PREFERENCES_NAME = "toDoo";
     public static final String API_TAG = "toDoo";
-    public static final String API_BASE_URL = "http://192.168.5.141/api/";
+    public static final String API_BASE_URL = "http://todoos.azurewebsites.net/api/";
 
     /**
      * API KEYS

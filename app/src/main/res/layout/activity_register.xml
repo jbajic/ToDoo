@@ -1,81 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MatchParent"
-    android:orientation="vertical"
-    android:gravity="center"
+    style="@style/MatchParentVertical"
     tools:context="com.jbajic.todoo.RegisterActivity">
 
-    <TextView
-        style="@style/LogoTextStyle"
-        android:text="@string/register" />
+    <include layout="@layout/toolbar" />
 
-    <LinearLayout
-        style="@style/MatchWidth"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/bigPadding1">
+    <LinearLayout style="@style/MatchParentVerticalCenter">
 
-        <LinearLayout style="@style/MatchWidth">
+        <TextView
+            style="@style/LogoTextStyle"
+            android:text="@string/register" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="@string/email" />
+        <LinearLayout
+            style="@style/MatchWidth"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/bigPadding1">
 
-            <EditText
-                android:id="@+id/et_email"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:hint="@string/example_mail"
-                android:inputType="textEmailAddress" />
+            <LinearLayout style="@style/MatchWidth">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/email" />
+
+                <EditText
+                    android:id="@+id/et_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:hint="@string/example_mail"
+                    android:inputType="textEmailAddress" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/MatchWidth">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/password" />
+
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:hint="@string/example_password"
+                    android:inputType="textPassword" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/MatchWidth">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/password_confirm" />
+
+                <EditText
+                    android:id="@+id/et_password_confirm"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:hint="@string/example_password"
+                    android:inputType="textPassword" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout style="@style/MatchWidth">
+        <Button
+            android:id="@+id/bt_register"
+            style="@style/PinkButtonStyle"
+            android:text="@string/sign_up" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="@string/password" />
-
-            <EditText
-                android:id="@+id/et_password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:hint="@string/example_password"
-                android:inputType="textPassword" />
-
-        </LinearLayout>
-
-        <LinearLayout style="@style/MatchWidth">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="@string/password_confirm" />
-
-            <EditText
-                android:id="@+id/et_password_confirm"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:hint="@string/example_password"
-                android:inputType="textPassword" />
-
-        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pb_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/bt_login"
-        style="@style/PinkButtonStyle"
-        android:text="@string/sign_up" />
-
 
 </LinearLayout>
