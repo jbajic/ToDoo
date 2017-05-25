@@ -20,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
 
     @InjectView(R.id.et_email)
@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case R.id.bt_register:
                 Intent intent = new Intent(this, RegisterActivity.class);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 startActivity(intent);
                 break;
         }

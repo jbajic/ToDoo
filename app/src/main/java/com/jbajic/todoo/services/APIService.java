@@ -115,4 +115,8 @@ public class APIService {
         volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
     }
 
+    public void synchronize(final RequestListener requestListener) {
+
+    }
+
 }

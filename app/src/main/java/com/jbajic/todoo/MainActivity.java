@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @InjectView(R.id.rv_projects)
     RecyclerView rvProjects;
@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.add_project:
                 Intent intent = new Intent(this, AddProjectActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 break;
         }
-        return false;
+        return true;
     }
 
 }
