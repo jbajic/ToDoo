@@ -54,6 +54,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_EMAIL = "email";
     private static final String KEY_IMAGE_PATH = "image_path";
     private static final String KEY_USERNAME = "username";
+    private static final String KEY_FIRST_NAME = "first_name";
+    private static final String KEY_LAST_NAME = "last_name";
+    private static final String KEY_ADDRESS = "address";
+    private static final String KEY_CITY = "city";
     private static final String KEY_IS_ME = "is_me";
     private static final String KEY_USER_ID = "user_id";
 
@@ -79,6 +83,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_SERVER_ID + " INTEGER," +
             KEY_EMAIL + " TEXT," +
             KEY_USERNAME + " TEXT," +
+            KEY_FIRST_NAME + " TEXT," +
+            KEY_LAST_NAME + " TEXT," +
+            KEY_ADDRESS + " TEXT," +
+            KEY_CITY + " TEXT," +
             KEY_IS_ME + " INTEGER)";
 
     private static final String CREATE_TABLE_PROJECT = "CREATE TABLE " + TABLE_PROJECT + " (" +
@@ -115,7 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PROJECT);
         db.execSQL(CREATE_TABLE_TASK);
         db.execSQL(CREATE_TABLE_PROJECT_USER);
-        db.execSQL(TABLE_USER_TASK);
+        db.execSQL(CREATE_TABLE_TASK_USER);
     }
 
     @Override
@@ -148,7 +156,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         Long.valueOf(cursor.getString(1)),
                         cursor.getString(2),
                         cursor.getString(3),
-                        cursor.getInt(4) > 0
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        cursor.getString(6),
+                        cursor.getString(7),
+                        cursor.getInt(8) > 0
                 ));
             } while (cursor.moveToNext());
         }
@@ -165,6 +177,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_SERVER_ID, user.getServerId());
         values.put(KEY_EMAIL, user.getEmail());
         values.put(KEY_USERNAME, user.getUsername());
+        values.put(KEY_FIRST_NAME, user.getfName());
+        values.put(KEY_LAST_NAME, user.getlName());
+        values.put(KEY_ADDRESS, user.getAddress());
+        values.put(KEY_CITY, user.getCity());
+        values.put(KEY_IS_ME, user.getMe());
 
         sqLiteDatabase.insert(TABLE_USER, null, values);
         sqLiteDatabase.close();
@@ -177,6 +194,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_SERVER_ID, user.getServerId());
         values.put(KEY_EMAIL, user.getEmail());
         values.put(KEY_USERNAME, user.getUsername());
+        values.put(KEY_FIRST_NAME, user.getfName());
+        values.put(KEY_LAST_NAME, user.getlName());
+        values.put(KEY_ADDRESS, user.getAddress());
+        values.put(KEY_CITY, user.getCity());
+        values.put(KEY_IS_ME, user.getMe());
 
         sqLiteDatabase.update(TABLE_USER, values, KEY_ID + " = ?",
                 new String[] {String.valueOf(user.getId())});

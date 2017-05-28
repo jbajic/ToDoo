@@ -13,15 +13,29 @@ public final class AppConstants {
     /**
      * API KEYS
      */
+    public static final String APPLICATION_AUTHORIZATION = "Authorization";
+    public static final String KEY_JWT = "jwt";
     public static final String KEY_STATUS = "status";
+
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PASSWORD = "password";
-    public static final String KEY_JWT = "jwt";
+    public static final String KEY_ID = "id";
+    public static final String KEY_FIRST_NAME = "first_name";
+    public static final String KEY_LAST_NAME = "last_name";
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_ADDRESS = "address";
+    public static final String KEY_CITY = "city";
+    public static final String KEY_IS_ME = "isMe";
+    public static final String KEY_USERS = "users";
 
     /**
      * API ENDPOINTS
      */
     public static final String ENDPOINT_LOGIN = "login";
     public static final String ENDPOINT_REGISTER = "register";
+    public static final String ENDPOINT_USERS = "synchronize-users";
+    public static final String ENDPOINT_PROJECTS = "synchronize-projects";
+    public static final String ENDPOINT_CREATE_PROJECT = "create-project";
+    public static final String ENDPOINT_CREATE_TASK = "create-task";
 
 }
