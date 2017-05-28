@@ -32,8 +32,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:hint="@string/example_mail"
-                    android:text="bajic@mail.com"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:text="bajic@mail.com" />
 
             </LinearLayout>
 
@@ -51,17 +51,42 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:hint="@string/example_password"
-                    android:text="123456"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:text="123456" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/bt_login"
-            style="@style/PinkButtonStyle"
-            android:text="@string/sign_in" />
+        <LinearLayout
+            style="@style/MatchWidth"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/bt_login"
+                style="@style/PinkButtonStyle"
+                android:text="@string/sign_in" />
+
+            <LinearLayout
+                android:id="@+id/ll_progressStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_currentProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             style="@style/MatchWidth"

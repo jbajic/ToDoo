@@ -60,4 +60,12 @@
         <item name="android:background">@drawable/round_border</item>
     </style>
 
+    <!-- Edit text styles -->
+    <style name="EditTextAddProject">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:gravity">left|center_vertical</item>
+    </style>
+
 </resources>

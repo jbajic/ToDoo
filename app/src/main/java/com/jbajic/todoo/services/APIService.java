@@ -13,6 +13,8 @@ import com.jbajic.todoo.helpers.CustomJSONAuthObject;
 import com.jbajic.todoo.helpers.DatabaseHelper;
 import com.jbajic.todoo.helpers.VolleyRequestQueue;
 import com.jbajic.todoo.interfaces.RequestListener;
+import com.jbajic.todoo.models.Project;
+import com.jbajic.todoo.models.Task;
 import com.jbajic.todoo.models.User;
 import com.jbajic.todoo.utilis.AppConstants;
 
@@ -50,6 +52,7 @@ public class APIService {
         } catch (JSONException e) {
             Log.e("ERROR Login", e.getMessage());
             e.printStackTrace();
+            requestListener.failed(e.getMessage());
         }
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
@@ -131,12 +134,12 @@ public class APIService {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    if(response.getInt(AppConstants.KEY_STATUS) == 1) {
+                    if (response.getInt(AppConstants.KEY_STATUS) == 1) {
                         JSONArray users = response.getJSONArray(AppConstants.KEY_USERS);
                         Integer usersLength = users.length();
-                        if(usersLength != 0) {
+                        if (usersLength != 0) {
                             for (int i = 0; i < usersLength; ++i) {
-                                JSONObject userObject  = (JSONObject) users.get(i);
+                                JSONObject userObject = (JSONObject) users.get(i);
                                 databaseHelper.addUser(new User(
                                         userObject.getLong(AppConstants.KEY_ID),
                                         userObject.getString(AppConstants.KEY_EMAIL),
@@ -147,13 +150,6 @@ public class APIService {
                                         userObject.getString(AppConstants.KEY_CITY),
                                         userObject.getBoolean(AppConstants.KEY_IS_ME)
                                 ));
-                                Log.e("ID", String.valueOf(userObject.getLong(AppConstants.KEY_ID)));
-                                Log.e("EMAIL", userObject.getString(AppConstants.KEY_EMAIL));
-                                Log.e("FIRST NAME", userObject.getString(AppConstants.KEY_FIRST_NAME));
-                                Log.e("LAST NAME", userObject.getString(AppConstants.KEY_LAST_NAME));
-                                Log.e("USERNAME", userObject.getString(AppConstants.KEY_USERNAME));
-                                Log.e("ADDRESS", userObject.getString(AppConstants.KEY_CITY));
-                                Log.e("CITY", userObject.getString(AppConstants.KEY_ADDRESS));
                             }
                         }
                     } else {
@@ -184,7 +180,112 @@ public class APIService {
     }
 
     public void synchronizeProjects(final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+        final DatabaseHelper databaseHelper = DatabaseHelper.getInstance(activity);
 
+        CustomJSONAuthObject jsonAuthObject = new CustomJSONAuthObject(Request.Method.GET,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_PROJECTS, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response.getInt(AppConstants.KEY_STATUS) == 1) {
+                        JSONArray projects = response.getJSONArray(AppConstants.KEY_PROJECTS);
+                        Integer projectsLength = projects.length();
+                        if (projectsLength != 0) {
+                            for (int i = 0; i < projectsLength; ++i) {
+                                JSONObject projectObject = (JSONObject) projects.get(i);
+                                Long projectId = databaseHelper.addProject(new Project(
+                                        projectObject.getLong(AppConstants.KEY_ID),
+                                        projectObject.getString(AppConstants.KEY_NAME),
+                                        projectObject.getString(AppConstants.KEY_BODY),
+                                        projectObject.getString(AppConstants.KEY_CLIENT),
+                                        projectObject.getString(AppConstants.KEY_DEADLINE),
+                                        projectObject.getBoolean(AppConstants.KEY_COMPLETED),
+                                        projectObject.getLong(AppConstants.KEY_MANAGER_ID)
+                                ));
+
+                                JSONArray tasks = (JSONArray) projectObject.get(AppConstants.KEY_TASKS);
+                                Integer tasksLength = tasks.length();
+                                if (tasksLength != 0) {
+                                    for (int j = 0; j < tasksLength; ++j) {
+                                        JSONObject taskObject = (JSONObject) tasks.get(j);
+                                        databaseHelper.addTask(new Task(
+                                                taskObject.getLong(AppConstants.KEY_ID),
+                                                taskObject.getString(AppConstants.KEY_NAME),
+                                                taskObject.getString(AppConstants.KEY_BODY),
+                                                taskObject.getBoolean(AppConstants.KEY_COMPLETED),
+                                                taskObject.getInt(AppConstants.KEY_ESTIMATED_TIME),
+                                                taskObject.isNull(AppConstants.KEY_TASK_ID) ? null: taskObject.getLong(AppConstants.KEY_TASK_ID),
+                                                taskObject.getLong(AppConstants.KEY_PROJECT_ID)
+                                        ));
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        requestListener.failed("Server error");
+                        Log.e("ERROR SYNCPR", "Server error");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e("ERROR SYNCPR", e.getMessage());
+                    requestListener.failed(e.getMessage());
+                }
+                requestListener.finished("Projects updated");
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    requestListener.failed(error.getMessage());
+                    Log.e("ERROR SYNCPR2", error.getMessage());
+                } else {
+                    Log.e("ERROR SYNCPR3", "FAILED");
+                    requestListener.failed("Request failed");
+                }
+            }
+        }, activity);
+
+        volleyRequestQueue.addToRequestQueue(jsonAuthObject);
     }
 
+    public void createProject(Project project, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_NAME, project.getName());
+            jsonObject.put(AppConstants.KEY_BODY, project.getBody());
+            jsonObject.put(AppConstants.KEY_CLIENT, project.getClient());
+            jsonObject.put(AppConstants.KEY_DEADLINE, project.getDeadline());
+            jsonObject.put(AppConstants.KEY_MANAGER_ID, project.getManagerId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_CREATE_PROJECT, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Project creation failed");
+                    } else {
+                        Long projectId = response.getLong(AppConstants.KEY_PROJECT_ID);
+                        requestListener.finished(String.valueOf(projectId));
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestListener.failed(error.getMessage());
+            }
+        });
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
 }

@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jbajic.todoo.helpers.DatabaseHelper;
@@ -26,6 +28,10 @@ import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
 
+    @InjectView(R.id.tv_currentProgress)
+    TextView tvCurrentProgress;
+    @InjectView(R.id.ll_progressStatus)
+    LinearLayout llProgressStatus;
     private APIService apiService;
     @InjectView(R.id.et_email)
     EditText etEmail;
@@ -76,10 +82,7 @@ public class LoginActivity extends BaseActivity {
 
                         @Override
                         public void finished(String message) {
-                            startSynchronization();
-//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                            startActivity(intent);
-//                            finish();
+                            startSynchronizingUsers();
                         }
                     });
                 }
@@ -92,25 +95,49 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void startSynchronization() {
-     apiService.synchronizeUsers(new RequestListener() {
-         @Override
-         public void failed(String message) {
+    private void startSynchronizingUsers() {
+        btLogin.setVisibility(View.GONE);
+        llProgressStatus.setVisibility(View.VISIBLE);
+        tvCurrentProgress.setText(R.string.sync_users_message);
+        apiService.synchronizeUsers(new RequestListener() {
+            @Override
+            public void failed(String message) {
+                btLogin.setVisibility(View.VISIBLE);
+                llProgressStatus.setVisibility(View.GONE);
+                Toast.makeText(LoginActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+            }
 
-         }
+            @Override
+            public void finished(String message) {
+                startSynchronizingProjects();
+            }
+        });
+    }
 
-         @Override
-         public void finished(String message) {
+    private void startSynchronizingProjects() {
+        tvCurrentProgress.setText(R.string.sync_projects_message);
+        apiService.synchronizeProjects(new RequestListener() {
+            @Override
+            public void failed(String message) {
+                btLogin.setVisibility(View.VISIBLE);
+                llProgressStatus.setVisibility(View.GONE);
+                Toast.makeText(LoginActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+            }
 
-         }
-     });
+            @Override
+            public void finished(String message) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                finish();
+            }
+        });
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
         List<User> users = databaseHelper.getAllUsers();
-        for (User user:users) {
+        for (User user : users) {
             Log.e("USER ID", String.valueOf(user.getId()));
             Log.e("USER NAME", user.getfName() + user.getlName());
         }
     }
 
 }
-

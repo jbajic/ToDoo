@@ -245,7 +245,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return projectList;
     }
 
-    public void addProject(Project project) {
+    public Long addProject(Project project) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -257,8 +257,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_COMPLETED, project.getCompleted());
         values.put(KEY_MANAGER_ID, project.getManagerId());
 
-        sqLiteDatabase.insert(TABLE_PROJECT, null, values);
+        Long projectId = sqLiteDatabase.insert(TABLE_PROJECT, null, values);
         sqLiteDatabase.close();
+        return projectId;
     }
 
     public void updateProject(Project project) {

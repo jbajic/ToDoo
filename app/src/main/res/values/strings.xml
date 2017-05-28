@@ -25,4 +25,8 @@
     <string name="set_date">Set date</string>
     <string name="description">Description</string>
     <string name="create">Create</string>
+    <string name="sync_users_message">Synchronizing users...</string>
+    <string name="sync_projects_message">Synchronizing projects...</string>
+    <string name="manager">Manager</string>
+    <string name="creating_project">Creating project...</string>
 </resources>

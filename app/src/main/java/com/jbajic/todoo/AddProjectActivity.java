@@ -3,15 +3,27 @@ package com.jbajic.todoo;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.jbajic.todoo.helpers.DatabaseHelper;
+import com.jbajic.todoo.interfaces.RequestListener;
+import com.jbajic.todoo.models.Project;
+import com.jbajic.todoo.models.User;
+import com.jbajic.todoo.services.APIService;
 
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -33,6 +45,13 @@ public class AddProjectActivity extends BaseActivity {
     Button btCreateProject;
     @InjectView(R.id.tv_deadline)
     TextView tvDeadline;
+    @InjectView(R.id.sp_manager)
+    AppCompatSpinner spManager;
+    @InjectView(R.id.ll_createProjectStatus)
+    LinearLayout llCreateProjectStatus;
+
+    private User selectedUser;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +66,22 @@ public class AddProjectActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        databaseHelper = DatabaseHelper.getInstance(this);
+        final List<User> users = databaseHelper.getAllUsers();
+        ArrayAdapter<User> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, users);
+        spManager.setAdapter(adapter);
+        spManager.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedUser = users.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @OnClick({R.id.bt_setDeadline, R.id.bt_createProject})
@@ -77,10 +112,44 @@ public class AddProjectActivity extends BaseActivity {
                     etName.setError(getResources().getString(R.string.error_missing, "Name"));
                 } else if (client.isEmpty()) {
                     etClient.setError(getResources().getString(R.string.error_missing, "Client"));
-                } else if(body.isEmpty()) {
+                } else if (body.isEmpty()) {
                     etBody.setError(getResources().getString(R.string.error_missing, "Description"));
-                }
+                } else if (selectedUser == null) {
+                    Toast
+                            .makeText(this, getResources().getString(R.string.error_missing, "manager"), Toast.LENGTH_SHORT)
+                            .show();
+                } else if (deadline.isEmpty()) {
+                    Toast
+                            .makeText(this, getResources().getString(R.string.error_missing, "deadline"), Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    APIService apiService = APIService.getInstance(this);
+                    btCreateProject.setVisibility(View.GONE);
+                    llCreateProjectStatus.setVisibility(View.VISIBLE);
+                    final Project project = new Project(
+                            name,
+                            body,
+                            client,
+                            deadline,
+                            false,
+                            selectedUser.getServerId()
+                    );
+                    apiService.createProject(project, new RequestListener() {
+                        @Override
+                        public void failed(String message) {
+                            Toast.makeText(AddProjectActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
 
+                        @Override
+                        public void finished(String message) {
+                            Long projectId = Long.valueOf(message);
+                            project.setServerId(projectId);
+                            databaseHelper.addProject(project);
+                            AddProjectActivity.this.finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                        }
+                    });
+                }
                 break;
         }
     }

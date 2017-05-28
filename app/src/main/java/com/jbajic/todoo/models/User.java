@@ -106,4 +106,14 @@ public class User {
     public void setMe(Boolean me) {
         isMe = me;
     }
+
+    @Override
+    public String toString() {
+        if(this.getMe()) {
+            return "Me";
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.getfName()).append(" ").append(this.getlName());
+        return stringBuilder.toString();
+    }
 }

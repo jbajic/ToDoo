@@ -28,6 +28,18 @@ public final class AppConstants {
     public static final String KEY_IS_ME = "isMe";
     public static final String KEY_USERS = "users";
 
+    public static final String KEY_PROJECTS = "projects";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_BODY = "body";
+    public static final String KEY_CLIENT = "client";
+    public static final String KEY_DEADLINE = "deadline";
+    public static final String KEY_COMPLETED = "completed";
+    public static final String KEY_MANAGER_ID = "manager_id";
+    public static final String KEY_TASKS = "tasks";
+    public static final String KEY_ESTIMATED_TIME = "estimated_time";
+    public static final String KEY_PROJECT_ID = "project_id";
+    public static final String KEY_TASK_ID = "task_id";
+
     /**
      * API ENDPOINTS
      */

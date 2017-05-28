@@ -36,6 +36,15 @@ public class Project {
         this.managerId = managerId;
     }
 
+    public Project(String name, String body, String client, String deadline, Boolean completed, Long managerId) {
+        this.name = name;
+        this.body = body;
+        this.client = client;
+        this.deadline = deadline;
+        this.completed = completed;
+        this.managerId = managerId;
+    }
+
     public Long getId() {
         return id;
     }
