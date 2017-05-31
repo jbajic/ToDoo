@@ -36,7 +36,7 @@ public class CustomJSONAuthObject extends JsonObjectRequest {
             SharedPreferences sharedPreferences = context.getSharedPreferences(AppConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             String jwt = sharedPreferences.getString(AppConstants.KEY_JWT, "");
             String applicationAuthorization = "Bearer " + jwt;
-            params.put("Content-Type", "application/json");
+//            params.put("Content-Type", "application/json");
             params.put(AppConstants.APPLICATION_AUTHORIZATION, applicationAuthorization);
         }
         return params;
@@ -44,6 +44,6 @@ public class CustomJSONAuthObject extends JsonObjectRequest {
 
     @Override
     public RetryPolicy getRetryPolicy() {
-        return new DefaultRetryPolicy(5000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        return new DefaultRetryPolicy(10000, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     }
 }

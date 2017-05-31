@@ -1,10 +1,13 @@
 package com.jbajic.todoo.models;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * Created by jure on 15.05.17..
  */
 
-public class Project {
+public class Project implements Serializable {
 
     private Long id;
     private Long serverId;
@@ -14,6 +17,7 @@ public class Project {
     private String deadline;
     private Boolean completed;
     private Long managerId;
+    private ArrayList<Task> taskArrayList;
 
     public Project(Long id, Long serverId, String name, String body, String client, String deadline, Boolean completed, Long managerId) {
         this.id = id;
@@ -103,5 +107,16 @@ public class Project {
 
     public void setManagerId(Long managerId) {
         this.managerId = managerId;
+    }
+
+    public ArrayList<Task> getTaskArrayList() {
+        if(taskArrayList == null) {
+            return new ArrayList<Task>();
+        }
+        return taskArrayList;
+    }
+
+    public void setTaskArrayList(ArrayList<Task> taskArrayList) {
+        this.taskArrayList = taskArrayList;
     }
 }

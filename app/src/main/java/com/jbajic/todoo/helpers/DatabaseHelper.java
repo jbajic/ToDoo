@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.jbajic.todoo.models.Project;
 import com.jbajic.todoo.models.Task;
@@ -201,7 +202,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_IS_ME, user.getMe());
 
         sqLiteDatabase.update(TABLE_USER, values, KEY_ID + " = ?",
-                new String[] {String.valueOf(user.getId())});
+                new String[]{String.valueOf(user.getId())});
         sqLiteDatabase.close();
     }
 
@@ -219,7 +220,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Project> getAllProjects() {
         List<Project> projectList = new ArrayList<Project>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_PROJECT;
+        String selectQuery = "SELECT * FROM " + TABLE_PROJECT;
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
@@ -227,7 +228,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                projectList.add(new Project(
+                Project project = new Project(
                         Long.valueOf(cursor.getString(0)),
                         Long.valueOf(cursor.getString(1)),
                         cursor.getString(2),
@@ -235,8 +236,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(4),
                         cursor.getString(5),
                         cursor.getInt(6) > 0,
-                        Long.valueOf(cursor.getString(7))
-                ));
+                        Long.valueOf(cursor.getString(7)));
+                project.setTaskArrayList((ArrayList<Task>) getProjectTasks(project.getId()));
+
+                projectList.add(project);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -275,7 +278,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_MANAGER_ID, project.getManagerId());
 
         sqLiteDatabase.update(TABLE_PROJECT, values, KEY_ID + " = ?",
-                new String[] {String.valueOf(project.getId())});
+                new String[]{String.valueOf(project.getId())});
         sqLiteDatabase.close();
     }
 
@@ -319,6 +322,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return taskList;
     }
 
+    public List<Task> getProjectTasks(Long projectId) {
+        List<Task> taskList = new ArrayList<Task>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_TASK +
+                " WHERE " + KEY_PROJECT_ID + "=" + projectId;
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                taskList.add(new Task(
+                        Long.valueOf(cursor.getString(0)),
+                        Long.valueOf(cursor.getString(1)),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getInt(4) > 0,
+                        Integer.valueOf(cursor.getString(5)),
+                        cursor.getLong(6),
+                        cursor.getLong(7)
+                ));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        sqLiteDatabase.close();
+
+        return taskList;
+    }
+
     public void addTask(Task task) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -348,7 +381,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_PROJECT_ID, task.getProjectId());
 
         sqLiteDatabase.update(TABLE_TASK, values, KEY_ID + " = ?",
-                new String[] {String.valueOf(task.getId())});
+                new String[]{String.valueOf(task.getId())});
         sqLiteDatabase.close();
     }
 

@@ -1,10 +1,13 @@
 package com.jbajic.todoo.models;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * Created by jure on 15.05.17..
  */
 
-public class User {
+public class User implements Serializable {
 
     private Long id;
     private Long serverId;
@@ -15,6 +18,7 @@ public class User {
     private String address;
     private String city;
     private Boolean isMe;
+    private ArrayList<Project> projects;
 
     public User(Long id, Long serverId, String email, String username, String fName, String lName, String address, String city, Boolean isMe) {
         this.id = id;
@@ -37,6 +41,19 @@ public class User {
         this.address = address;
         this.city = city;
         this.isMe = isMe;
+    }
+
+    public User(Long id, Long serverId, String email, String username, String fName, String lName, String address, String city, Boolean isMe, ArrayList<Project> projects) {
+        this.id = id;
+        this.serverId = serverId;
+        this.email = email;
+        this.username = username;
+        this.fName = fName;
+        this.lName = lName;
+        this.address = address;
+        this.city = city;
+        this.isMe = isMe;
+        this.projects = projects;
     }
 
     public Long getId() {
@@ -107,13 +124,25 @@ public class User {
         isMe = me;
     }
 
+    public ArrayList<Project> getProjects() {
+        if(projects != null) {
+            return projects;
+        } else {
+            return new ArrayList<Project>();
+        }
+
+    }
+
+    public void setProjects(ArrayList<Project> projects) {
+        this.projects = projects;
+    }
+
     @Override
     public String toString() {
         if(this.getMe()) {
             return "Me";
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.getfName()).append(" ").append(this.getlName());
-        return stringBuilder.toString();
+        return this.getfName() + " " + this.getlName();
     }
+
 }

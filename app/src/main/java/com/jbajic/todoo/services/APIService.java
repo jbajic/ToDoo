@@ -9,6 +9,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.jbajic.todoo.R;
 import com.jbajic.todoo.helpers.CustomJSONAuthObject;
 import com.jbajic.todoo.helpers.DatabaseHelper;
 import com.jbajic.todoo.helpers.VolleyRequestQueue;
@@ -50,7 +51,7 @@ public class APIService {
             jsonObject.put(AppConstants.KEY_EMAIL, email);
             jsonObject.put(AppConstants.KEY_PASSWORD, password);
         } catch (JSONException e) {
-            Log.e("ERROR Login", e.getMessage());
+            Log.e("ERROR Login1", e.getMessage());
             e.printStackTrace();
             requestListener.failed(e.getMessage());
         }
@@ -72,18 +73,18 @@ public class APIService {
                         editor.commit();
                         requestListener.finished("success");
                     } else {
-                        requestListener.failed("Login failed");
+                        requestListener.failed("Login4 failed");
                     }
                 } catch (Exception e) {
                     Log.e("ERROR Login2", e.getMessage());
-                    requestListener.failed(e.getMessage());
+                    requestListener.failed(activity.getString(R.string.volley_request_fail));
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("ERROR Login", String.valueOf(error));
-                requestListener.failed(error.getMessage());
+                Log.e("ERROR Login3", String.valueOf(error));
+                requestListener.failed(activity.getString(R.string.volley_request_fail));
             }
         });
 
@@ -215,7 +216,7 @@ public class APIService {
                                                 taskObject.getString(AppConstants.KEY_BODY),
                                                 taskObject.getBoolean(AppConstants.KEY_COMPLETED),
                                                 taskObject.getInt(AppConstants.KEY_ESTIMATED_TIME),
-                                                taskObject.isNull(AppConstants.KEY_TASK_ID) ? null: taskObject.getLong(AppConstants.KEY_TASK_ID),
+                                                taskObject.isNull(AppConstants.KEY_TASK_ID) ? null : taskObject.getLong(AppConstants.KEY_TASK_ID),
                                                 taskObject.getLong(AppConstants.KEY_PROJECT_ID)
                                         ));
                                     }
@@ -259,14 +260,20 @@ public class APIService {
             jsonObject.put(AppConstants.KEY_CLIENT, project.getClient());
             jsonObject.put(AppConstants.KEY_DEADLINE, project.getDeadline());
             jsonObject.put(AppConstants.KEY_MANAGER_ID, project.getManagerId());
+            Log.e("SEND name", project.getName());
+            Log.e("SEND body", project.getBody());
+            Log.e("SEND client", project.getClient());
+            Log.e("SEND dead", project.getDeadline());
+            Log.e("SEND manager", String.valueOf(project.getManagerId()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+        CustomJSONAuthObject jsonObjectRequest = new CustomJSONAuthObject(Request.Method.POST,
                 AppConstants.API_BASE_URL + AppConstants.ENDPOINT_CREATE_PROJECT, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.e("RESPONSE", String.valueOf(response));
                 try {
                     Integer status = response.getInt(AppConstants.KEY_STATUS);
                     if (status == 0) {
@@ -284,7 +291,8 @@ public class APIService {
             public void onErrorResponse(VolleyError error) {
                 requestListener.failed(error.getMessage());
             }
-        });
+        },
+                activity);
 
         volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
     }

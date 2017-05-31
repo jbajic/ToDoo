@@ -56,9 +56,9 @@ public class LoginActivity extends BaseActivity {
                 Context.MODE_PRIVATE);
         if (sharedPreferences.contains(AppConstants.KEY_JWT) && sharedPreferences.contains(AppConstants.KEY_EMAIL)
                 && sharedPreferences.contains(AppConstants.KEY_PASSWORD)) {
-//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//            startActivity(intent);
-//            finish();
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         }
         apiService = APIService.getInstance(this);
     }
@@ -67,6 +67,8 @@ public class LoginActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_login:
+                btLogin.setVisibility(View.GONE);
+                llProgressStatus.setVisibility(View.VISIBLE);
                 String email = String.valueOf(etEmail.getText());
                 String password = String.valueOf(etPassword.getText());
                 if (email.isEmpty()) {
@@ -78,6 +80,8 @@ public class LoginActivity extends BaseActivity {
                         @Override
                         public void failed(String message) {
                             Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                            btLogin.setVisibility(View.VISIBLE);
+                            llProgressStatus.setVisibility(View.GONE);
                         }
 
                         @Override
