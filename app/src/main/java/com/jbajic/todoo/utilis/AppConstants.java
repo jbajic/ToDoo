@@ -50,4 +50,8 @@ public final class AppConstants {
     public static final String ENDPOINT_CREATE_PROJECT = "create-project";
     public static final String ENDPOINT_CREATE_TASK = "create-task";
 
+    /**
+     * Extra info
+     */
+    public static final String EXTRA_KEY_PROJECT = "project";
 }

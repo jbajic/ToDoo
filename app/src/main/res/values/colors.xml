@@ -11,4 +11,7 @@
 
     <color name="menuTextColor">@color/pinkLight</color>
 
+    <color name="infoSwipe">#388E3C</color>
+    <color name="editSwipe">@color/colorPrimary</color>
+    <color name="deleteColor">#D32F2F</color>
 </resources>

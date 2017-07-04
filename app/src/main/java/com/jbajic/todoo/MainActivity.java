@@ -2,17 +2,19 @@ package com.jbajic.todoo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.jbajic.todoo.adapters.ProjectAdapter;
 import com.jbajic.todoo.helpers.DatabaseHelper;
+import com.jbajic.todoo.helpers.SimpleItemTouchHelperCallback;
+import com.jbajic.todoo.interfaces.DismissedProjectListener;
 import com.jbajic.todoo.models.Project;
 
 import java.util.List;
@@ -27,7 +29,9 @@ public class MainActivity extends BaseActivity {
     @InjectView(R.id.my_toolbar)
     Toolbar myToolbar;
 
-    private DatabaseHelper databaseHelper;
+    private ItemTouchHelper itemTouchHelper;
+    private List<Project> projectsList;
+    private ProjectAdapter projectAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +41,79 @@ public class MainActivity extends BaseActivity {
 
         setSupportActionBar(myToolbar);
 
-        databaseHelper = DatabaseHelper.getInstance(this);
-        List<Project> projectsList = databaseHelper.getAllProjects();
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
+        projectsList = databaseHelper.getAllProjects();
         Log.e("PROJECTS SIZE", String.valueOf(projectsList.size()));
 
-        ProjectAdapter projectAdapter = new ProjectAdapter(this, projectsList);
+        projectAdapter = new ProjectAdapter(this, projectsList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         rvProjects.addItemDecoration(itemDecoration);
         rvProjects.setLayoutManager(layoutManager);
         rvProjects.setAdapter(projectAdapter);
+
+        ItemTouchHelper.Callback callback =
+                new SimpleItemTouchHelperCallback(projectAdapter, R.drawable.ic_info, R.drawable.ic_edit, this);
+
+//        ItemTouchHelper.Callback callback1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//                int position = viewHolder.getAdapterPosition();
+//
+//                if (direction == ItemTouchHelper.LEFT) {
+//                    Log.e("POSITION SWIPED", "LEFT");
+////                    adapter.removeItem(position);
+//                } else if (direction == ItemTouchHelper.RIGHT) {
+//                    Log.e("POSITION SWIPED", "RIGHT");
+//                    Intent intent = new Intent(MainActivity.this, ProjectActivity.class);
+//                    intent.putExtra(AppConstants.EXTRA_KEY_PROJECT, projectsList.get(position));
+//                    startActivity(intent);
+//                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+//                }
+//            }
+//
+//            @Override
+//            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+//                Bitmap icon;
+//                Paint p = new Paint();
+//                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+//
+//                    View itemView = viewHolder.itemView;
+//                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+//                    float width = height / 3;
+//
+//                    if (dX > 0) {
+//                        p.setColor(Color.parseColor("#388E3C"));
+//                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+//                        c.drawRect(background, p);
+//                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit);
+//                        RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
+//                        c.drawBitmap(icon, null, icon_dest, p);
+//                    } else {
+//                        p.setColor(Color.parseColor("#D32F2F"));
+//                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+//                        c.drawRect(background, p);
+//                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_trash);
+//                        RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+//                        c.drawBitmap(icon, null, icon_dest, p);
+//                    }
+//                }
+//                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//            }
+//        };
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(rvProjects);
+    }
+
+    @Override
+    protected void onResume() {
+        projectAdapter.notifyDataSetChanged();
+        super.onResume();
     }
 
     @Override

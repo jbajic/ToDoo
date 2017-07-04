@@ -1,10 +1,12 @@
 package com.jbajic.todoo.models;
 
+import java.io.Serializable;
+
 /**
  * Created by jure on 15.05.17..
  */
 
-public class Task {
+public class Task implements Serializable {
 
     private Long id;
     private Long serverId;

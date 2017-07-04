@@ -4,61 +4,102 @@
     style="@style/MatchWidthVertical"
     android:padding="@dimen/smallPadding3">
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="80dp"-->
+        <!--android:background="#FF5534"-->
+        <!--android:gravity="center"-->
+        <!--android:tag="Bottom3"-->
+        <!--android:weightSum="10">-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/trash"-->
+            <!--android:layout_width="27dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/ic_trash" />-->
+
+        <!--<TextView-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="5"-->
+            <!--android:text="Delete Item?"-->
+            <!--android:textColor="#fff"-->
+            <!--android:textSize="17sp" />-->
+
+        <!--<Button-->
+            <!--android:id="@+id/delete"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_weight="4"-->
+            <!--android:background="#ffffff"-->
+            <!--android:text="Yes,Delete"-->
+            <!--android:textColor="#FF5534" />-->
+    <!--</LinearLayout>-->
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/smallPadding1">
+        android:id="@+id/ll_projectView"
+        style="@style/MatchWidthVertical">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:id="@+id/ll_projectInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/smallPadding1">
 
-            <ImageView
-                android:id="@+id/iv_managerInitials"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <ImageView
+                    android:id="@+id/iv_managerInitials"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_projectName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/mediumTextSize13"
+                    tools:text="Project name" />
+
+                <TextView
+                    android:id="@+id/tv_projectDeadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/mediumTextSize12"
+                    tools:text="Client hesus" />
+
+                <TextView
+                    android:id="@+id/tv_projectClient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/mediumTextSize12"
+                    tools:text="20.08.2015." />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_projectName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/mediumTextSize13"
-                tools:text="Project name" />
-
-            <TextView
-                android:id="@+id/tv_projectDeadline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/mediumTextSize12"
-                tools:text="Client hesus" />
-
-            <TextView
-                android:id="@+id/tv_projectClient"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/mediumTextSize12"
-                tools:text="20.08.2015." />
-
-        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/pb_projectProgress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="false"
+            android:progress="40"
+            android:progressDrawable="@drawable/progressbar_background" />
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/pb_projectProgress"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:progressDrawable="@drawable/progressbar_background"
-        android:indeterminate="false"
-        android:progress="40" />
 
 </LinearLayout>
