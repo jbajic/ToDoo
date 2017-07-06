@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParentVertical"
+    tools:context="com.jbajic.todoo.SettingsActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        style="@style/MatchParentVertical"
+        android:padding="@dimen/smallPadding3">
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/PinkButtonStyle"
+            android:text="@string/logout"/>
+
+        <Button
+            android:id="@+id/btn_database"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/PinkButtonStyle"
+            android:text="DATABASE"/>
+
+    </LinearLayout>
+
+</LinearLayout>

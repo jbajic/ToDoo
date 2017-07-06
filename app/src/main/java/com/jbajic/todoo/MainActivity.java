@@ -54,58 +54,6 @@ public class MainActivity extends BaseActivity {
 
         ItemTouchHelper.Callback callback =
                 new SimpleItemTouchHelperCallback(projectAdapter, R.drawable.ic_info, R.drawable.ic_edit, this);
-
-//        ItemTouchHelper.Callback callback1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
-//            @Override
-//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                int position = viewHolder.getAdapterPosition();
-//
-//                if (direction == ItemTouchHelper.LEFT) {
-//                    Log.e("POSITION SWIPED", "LEFT");
-////                    adapter.removeItem(position);
-//                } else if (direction == ItemTouchHelper.RIGHT) {
-//                    Log.e("POSITION SWIPED", "RIGHT");
-//                    Intent intent = new Intent(MainActivity.this, ProjectActivity.class);
-//                    intent.putExtra(AppConstants.EXTRA_KEY_PROJECT, projectsList.get(position));
-//                    startActivity(intent);
-//                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-//                }
-//            }
-//
-//            @Override
-//            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-//                Bitmap icon;
-//                Paint p = new Paint();
-//                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-//
-//                    View itemView = viewHolder.itemView;
-//                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
-//                    float width = height / 3;
-//
-//                    if (dX > 0) {
-//                        p.setColor(Color.parseColor("#388E3C"));
-//                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
-//                        c.drawRect(background, p);
-//                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit);
-//                        RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
-//                        c.drawBitmap(icon, null, icon_dest, p);
-//                    } else {
-//                        p.setColor(Color.parseColor("#D32F2F"));
-//                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
-//                        c.drawRect(background, p);
-//                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_trash);
-//                        RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
-//                        c.drawBitmap(icon, null, icon_dest, p);
-//                    }
-//                }
-//                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-//            }
-//        };
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(rvProjects);
     }
@@ -124,13 +72,17 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
             case R.id.add_project:
-                Intent intent = new Intent(this, AddProjectActivity.class);
+                intent = new Intent(this, AddProjectActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
         }
         return true;

@@ -291,8 +291,54 @@ public class APIService {
             public void onErrorResponse(VolleyError error) {
                 requestListener.failed(error.getMessage());
             }
-        },
-                activity);
+        }, activity);
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void updateProject(Project project, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_ID, project.getServerId());
+            jsonObject.put(AppConstants.KEY_NAME, project.getName());
+            jsonObject.put(AppConstants.KEY_BODY, project.getBody());
+            jsonObject.put(AppConstants.KEY_CLIENT, project.getClient());
+            jsonObject.put(AppConstants.KEY_DEADLINE, project.getDeadline());
+            jsonObject.put(AppConstants.KEY_MANAGER_ID, project.getManagerId());
+            Log.e("SEND id", String.valueOf(project.getServerId()));
+            Log.e("SEND name", project.getName());
+            Log.e("SEND body", project.getBody());
+            Log.e("SEND client", project.getClient());
+            Log.e("SEND dead", project.getDeadline());
+            Log.e("SEND manager", String.valueOf(project.getManagerId()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomJSONAuthObject jsonObjectRequest = new CustomJSONAuthObject(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_UPDATE_PROJECT, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RESPONSE", String.valueOf(response));
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Project update failed");
+                    } else {
+                        requestListener.finished("Update successful");
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestListener.failed(error.getMessage());
+            }
+        }, activity);
 
         volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
     }

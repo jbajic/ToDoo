@@ -48,7 +48,10 @@ public final class AppConstants {
     public static final String ENDPOINT_USERS = "synchronize-users";
     public static final String ENDPOINT_PROJECTS = "synchronize-projects";
     public static final String ENDPOINT_CREATE_PROJECT = "create-project";
+    public static final String ENDPOINT_UPDATE_PROJECT = "update-project";
+    public static final String ENDPOINT_DELETE_PROJECT = "delete-project";
     public static final String ENDPOINT_CREATE_TASK = "create-task";
+    public static final String ENDPOINT_DELETE_TASK = "delete-task";
 
     /**
      * Extra info

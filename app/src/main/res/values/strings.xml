@@ -30,4 +30,7 @@
     <string name="manager">Manager</string>
     <string name="creating_project">Creating project...</string>
     <string name="volley_request_fail">Request failed please try again!</string>
+    <string name="update">Update</string>
+    <string name="logout">Logout</string>
+    <string name="status_update_project">Updating project...</string>
 </resources>

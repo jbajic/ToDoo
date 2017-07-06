@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
+import android.database.MatrixCursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -171,6 +173,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
+    public Cursor getAllUsersCursor() {
+        // Select All Query
+        String selectQuery = "SELECT id AS _id, first_name || ' ' ||  FROM last_name AS name " + TABLE_USER;
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
+        }
+    }
+
     public void addUser(User user) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -210,6 +227,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.delete(TABLE_USER, KEY_ID + " = ?",
                 new String[]{String.valueOf(user.getId())});
+        sqLiteDatabase.close();
+    }
+
+    public void deleteUsers() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_USER, null, null);
         sqLiteDatabase.close();
     }
 
@@ -286,6 +309,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.delete(TABLE_PROJECT, KEY_ID + " = ?",
                 new String[]{String.valueOf(project.getId())});
+        sqLiteDatabase.close();
+    }
+
+    public void deleteProjects() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_PROJECT, null, null);
         sqLiteDatabase.close();
     }
 
@@ -392,9 +421,74 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
+    public void deleteTasks() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_TASK, null, null);
+        sqLiteDatabase.close();
+    }
+
     /**
      * TaskUserQuery
      */
+    public void deleteTaskUser() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_USER_TASK, null, null);
+        sqLiteDatabase.close();
+    }
+
+    /**
+     * UserProjectQueries
+     */
+
+    public void deleteUserProject() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_PROJECT_USER, null, null);
+        sqLiteDatabase.close();
+    }
 
 //    public void associateTaskUser(User )
+
+    public ArrayList<Cursor> getData(String Query){
+        //get writable database
+        SQLiteDatabase sqlDB = this.getWritableDatabase();
+        String[] columns = new String[] { "message" };
+        //an array list of cursor to save two cursors one has results from the query
+        //other cursor stores error message if any errors are triggered
+        ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
+        MatrixCursor Cursor2= new MatrixCursor(columns);
+        alc.add(null);
+        alc.add(null);
+
+        try{
+            String maxQuery = Query ;
+            //execute the query results will be save in Cursor c
+            Cursor c = sqlDB.rawQuery(maxQuery, null);
+
+            //add value to cursor2
+            Cursor2.addRow(new Object[] { "Success" });
+
+            alc.set(1,Cursor2);
+            if (null != c && c.getCount() > 0) {
+
+                alc.set(0,c);
+                c.moveToFirst();
+
+                return alc ;
+            }
+            return alc;
+        } catch(SQLException sqlEx){
+            Log.d("printing exception", sqlEx.getMessage());
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
+            alc.set(1,Cursor2);
+            return alc;
+        } catch(Exception ex){
+            Log.d("printing exception", ex.getMessage());
+
+            //if any exceptions are triggered save the error message to cursor an return the arraylist
+            Cursor2.addRow(new Object[] { ""+ex.getMessage() });
+            alc.set(1,Cursor2);
+            return alc;
+        }
+    }
 }

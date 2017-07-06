@@ -1,6 +1,7 @@
 package com.jbajic.todoo;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.AppCompatSpinner;
@@ -21,6 +22,7 @@ import com.jbajic.todoo.interfaces.RequestListener;
 import com.jbajic.todoo.models.Project;
 import com.jbajic.todoo.models.User;
 import com.jbajic.todoo.services.APIService;
+import com.jbajic.todoo.utilis.AppConstants;
 
 import java.util.Calendar;
 import java.util.List;
@@ -49,9 +51,12 @@ public class AddProjectActivity extends BaseActivity {
     AppCompatSpinner spManager;
     @InjectView(R.id.ll_createProjectStatus)
     LinearLayout llCreateProjectStatus;
+    @InjectView(R.id.tv_currentStatus)
+    TextView tvCurrentStatus;
 
     private User selectedUser;
     private DatabaseHelper databaseHelper;
+    Project project;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +74,21 @@ public class AddProjectActivity extends BaseActivity {
 
         databaseHelper = DatabaseHelper.getInstance(this);
         final List<User> users = databaseHelper.getAllUsers();
-        ArrayAdapter<User> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, users);
+        ArrayAdapter<User> adapter = new ArrayAdapter<User>(this, android.R.layout.simple_spinner_item, users);
         spManager.setAdapter(adapter);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(AppConstants.EXTRA_KEY_PROJECT)) {
+            btCreateProject.setText(R.string.update);
+
+            project = (Project) intent.getSerializableExtra(AppConstants.EXTRA_KEY_PROJECT);
+            fillFields(project);
+            for (User user : users) {
+                if (user.getId().equals(project.getManagerId())) {
+                    spManager.setSelection(adapter.getPosition(user));
+                }
+            }
+        }
         spManager.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -82,6 +100,13 @@ public class AddProjectActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private void fillFields(Project project) {
+        etName.setText(project.getName());
+        etClient.setText(project.getClient());
+        etBody.setText(project.getBody());
+        tvDeadline.setText(project.getDeadline());
     }
 
     @OnClick({R.id.bt_setDeadline, R.id.bt_createProject})
@@ -123,32 +148,58 @@ public class AddProjectActivity extends BaseActivity {
                             .makeText(this, getResources().getString(R.string.error_missing, "deadline"), Toast.LENGTH_SHORT)
                             .show();
                 } else {
-                    APIService apiService = APIService.getInstance(this);
-                    btCreateProject.setVisibility(View.GONE);
-                    llCreateProjectStatus.setVisibility(View.VISIBLE);
-                    final Project project = new Project(
-                            name,
-                            body,
-                            client,
-                            deadline,
-                            false,
-                            selectedUser.getServerId()
-                    );
-                    apiService.createProject(project, new RequestListener() {
-                        @Override
-                        public void failed(String message) {
-                            Toast.makeText(AddProjectActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
+                    if (project == null) {
+                        APIService apiService = APIService.getInstance(this);
+                        btCreateProject.setVisibility(View.GONE);
+                        llCreateProjectStatus.setVisibility(View.VISIBLE);
+                        final Project project = new Project(
+                                name,
+                                body,
+                                client,
+                                deadline,
+                                false,
+                                selectedUser.getServerId()
+                        );
+                        apiService.createProject(project, new RequestListener() {
+                            @Override
+                            public void failed(String message) {
+                                Toast.makeText(AddProjectActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void finished(String message) {
-                            Long projectId = Long.valueOf(message);
-                            project.setServerId(projectId);
-                            databaseHelper.addProject(project);
-                            AddProjectActivity.this.finish();
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-                        }
-                    });
+                            @Override
+                            public void finished(String message) {
+                                Long projectId = Long.valueOf(message);
+                                project.setServerId(projectId);
+                                databaseHelper.addProject(project);
+                                AddProjectActivity.this.finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                            }
+                        });
+                    } else {
+                        APIService apiService = APIService.getInstance(this);
+                        btCreateProject.setVisibility(View.GONE);
+                        llCreateProjectStatus.setVisibility(View.VISIBLE);
+                        tvCurrentStatus.setText(R.string.status_update_project);
+                        project.setName(name);
+                        project.setBody(body);
+                        project.setClient(client);
+                        project.setDeadline(deadline);
+                        project.setManagerId(selectedUser.getId());
+                        apiService.updateProject(project, new RequestListener() {
+                            @Override
+                            public void failed(String message) {
+                                Toast.makeText(AddProjectActivity.this, message, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void finished(String message) {
+                                databaseHelper.updateProject(project);
+                                AddProjectActivity.this.finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                            }
+                        });
+                    }
+
                 }
                 break;
         }
@@ -160,8 +211,6 @@ public class AddProjectActivity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            case R.id.settings:
-                break;
         }
         return true;
     }

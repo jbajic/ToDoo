@@ -25,7 +25,11 @@
         <activity
             android:name=".AddProjectActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ProjectActivity"></activity>
+        <activity android:name=".ProjectActivity" />
+        <activity android:name=".AndroidDatabaseManager" />
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

@@ -98,13 +98,13 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
     @Override
     public void onItemDismiss(int position, int side) {
-        if (side == ItemTouchHelper.START) {
+        if (side == ItemTouchHelper.END) {
             Log.e("POSITION SWIPED", "RIGHT");
             Intent intent = new Intent(context, ProjectActivity.class);
             intent.putExtra(AppConstants.EXTRA_KEY_PROJECT, projectsList.get(position));
             context.startActivity(intent);
             ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-        } else if (side == ItemTouchHelper.END) {
+        } else if (side == ItemTouchHelper.START) {
             Log.e("POSITION SWIPED", "RIGHT");
             Intent intent = new Intent(context, AddProjectActivity.class);
             intent.putExtra(AppConstants.EXTRA_KEY_PROJECT, projectsList.get(position));
