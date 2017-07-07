@@ -32,7 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_USER = "user";
     private static final String TABLE_PROJECT = "project";
     private static final String TABLE_TASK = "task";
-    private static final String TABLE_USER_TASK = "user_task";
     private static final String TABLE_PROJECT_USER = "project_user";
 
     private static DatabaseHelper databaseHelper;
@@ -55,7 +54,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_SERVER_ID = "server_id";
     private static final String KEY_EMAIL = "email";
-    private static final String KEY_IMAGE_PATH = "image_path";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_FIRST_NAME = "first_name";
     private static final String KEY_LAST_NAME = "last_name";
@@ -110,15 +108,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_COMPLETED + " INTEGER," +
             KEY_ESTIMATED_TIME + " INTEGER," +
             KEY_CATEGORY_ID + " INTEGER," +
-            KEY_PROJECT_ID + " INTEGER)";
+            KEY_PROJECT_ID + " INTEGER," +
+            KEY_USER_ID + " INTEGER)";
 
     private static final String CREATE_TABLE_PROJECT_USER = "CREATE TABLE " + TABLE_PROJECT_USER + " (" +
             KEY_PROJECT_ID + " INTEGER," +
             KEY_USER_ID + " INTEGER)";
-
-    private static final String CREATE_TABLE_TASK_USER = "CREATE TABLE " + TABLE_USER_TASK + " (" +
-            KEY_USER_ID + " INTEGER," +
-            KEY_TASK_ID + " INTEGER)";
+//
+//    private static final String CREATE_TABLE_TASK_USER = "CREATE TABLE " + TABLE_USER_TASK + " (" +
+//            KEY_USER_ID + " INTEGER," +
+//            KEY_TASK_ID + " INTEGER)";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -126,7 +125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PROJECT);
         db.execSQL(CREATE_TABLE_TASK);
         db.execSQL(CREATE_TABLE_PROJECT_USER);
-        db.execSQL(CREATE_TABLE_TASK_USER);
+//        db.execSQL(CREATE_TABLE_TASK_USER);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASK);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECT_USER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_TASK);
+//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_TASK);
         onCreate(db);
     }
 
@@ -173,19 +172,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
-    public Cursor getAllUsersCursor() {
+    public List<User> getAllUsersFromProject(Project project) {
+        List<User> userList = new ArrayList<User>();
         // Select All Query
-        String selectQuery = "SELECT id AS _id, first_name || ' ' ||  FROM last_name AS name " + TABLE_USER;
+        String selectQuery = "SELECT  * FROM " + TABLE_USER +
+                " INNER JOIN " + TABLE_PROJECT_USER +
+                " ON " + TABLE_USER + "." + KEY_ID + "=" + TABLE_PROJECT_USER + "." + KEY_USER_ID +
+                " WHERE " + TABLE_PROJECT_USER + "." + KEY_PROJECT_ID + "=" + project.getServerId() ;
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
-            return cursor;
-        } else {
-            return null;
+            do {
+                userList.add(new User(
+                        Long.valueOf(cursor.getString(0)),
+                        Long.valueOf(cursor.getString(1)),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        cursor.getString(6),
+                        cursor.getString(7),
+                        cursor.getInt(8) > 0
+                ));
+            } while (cursor.moveToNext());
         }
+        cursor.close();
+        sqLiteDatabase.close();
+
+        return userList;
     }
 
     public void addUser(User user) {
@@ -260,7 +277,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(5),
                         cursor.getInt(6) > 0,
                         Long.valueOf(cursor.getString(7)));
-                project.setTaskArrayList((ArrayList<Task>) getProjectTasks(project.getId()));
+                project.setTaskArrayList((ArrayList<Task>) getProjectTasks(project.getServerId()));
 
                 projectList.add(project);
             } while (cursor.moveToNext());
@@ -269,6 +286,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
 
         return projectList;
+    }
+
+    public Project getProject(Long id) {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_PROJECT +
+                " WHERE " + KEY_ID + "=" + id;
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
+
+        if(cursor != null) {
+            cursor.moveToFirst();
+            Project project = new Project(
+                    Long.valueOf(cursor.getString(0)),
+                    Long.valueOf(cursor.getString(1)),
+                    cursor.getString(2),
+                    cursor.getString(3),
+                    cursor.getString(4),
+                    cursor.getString(5),
+                    cursor.getInt(6) > 0,
+                    Long.valueOf(cursor.getString(7)));
+
+            cursor.close();
+            sqLiteDatabase.close();
+
+            return project;
+        } else {
+            return null;
+        }
     }
 
     public Long addProject(Project project) {
@@ -322,36 +366,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Task queries
      */
 
-    public List<Task> getAllTasks() {
-        List<Task> taskList = new ArrayList<Task>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_TASK;
-
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                taskList.add(new Task(
-                        Long.valueOf(cursor.getString(0)),
-                        Long.valueOf(cursor.getString(1)),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getInt(4) > 0,
-                        Integer.valueOf(cursor.getString(5)),
-                        Long.valueOf(cursor.getString(6)),
-                        Long.valueOf(cursor.getString(7))
-                ));
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        sqLiteDatabase.close();
-
-        return taskList;
-    }
-
-    public List<Task> getProjectTasks(Long projectId) {
+    private List<Task> getProjectTasks(Long projectId) {
         List<Task> taskList = new ArrayList<Task>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_TASK +
@@ -371,7 +386,75 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getInt(4) > 0,
                         Integer.valueOf(cursor.getString(5)),
                         cursor.getLong(6),
-                        cursor.getLong(7)
+                        cursor.getLong(7),
+                        cursor.getLong(8)
+                ));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        sqLiteDatabase.close();
+
+        return taskList;
+    }
+
+    public List<Task> getProjectCategoryTask(Long projectId) {
+        List<Task> categoryList = new ArrayList<Task>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_TASK +
+                " WHERE " + KEY_PROJECT_ID + "=" + projectId + " AND " +
+                KEY_CATEGORY_ID + " IS NULL";
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task(
+                        Long.valueOf(cursor.getString(0)),
+                        Long.valueOf(cursor.getString(1)),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getInt(4) > 0,
+                        Integer.valueOf(cursor.getString(5)),
+                        cursor.getLong(6),
+                        cursor.getLong(7),
+                        cursor.getLong(8)
+                );
+                task.setTaskList(getCategoryTasks(task.getServerId()));
+
+                categoryList.add(task);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        sqLiteDatabase.close();
+
+        return categoryList;
+    }
+
+    private List<Task> getCategoryTasks(Long categoryId) {
+        List<Task> taskList = new ArrayList<Task>();
+        // Select All Query
+        Log.e("CATEGORY ID", String.valueOf(categoryId));
+        String selectQuery = "SELECT * FROM " + TABLE_TASK +
+                " WHERE " + KEY_CATEGORY_ID + "=" + categoryId;
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                taskList.add(new Task(
+                        Long.valueOf(cursor.getString(0)),
+                        Long.valueOf(cursor.getString(1)),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getInt(4) > 0,
+                        Integer.valueOf(cursor.getString(5)),
+                        cursor.getLong(6),
+                        cursor.getLong(7),
+                        cursor.getLong(8)
                 ));
             } while (cursor.moveToNext());
         }
@@ -392,6 +475,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ESTIMATED_TIME, task.getEstimatedTime());
         values.put(KEY_CATEGORY_ID, task.getCategoryId());
         values.put(KEY_PROJECT_ID, task.getProjectId());
+        values.put(KEY_USER_ID, task.getUserId());
 
         sqLiteDatabase.insert(TABLE_TASK, null, values);
         sqLiteDatabase.close();
@@ -408,6 +492,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ESTIMATED_TIME, task.getEstimatedTime());
         values.put(KEY_CATEGORY_ID, task.getCategoryId());
         values.put(KEY_PROJECT_ID, task.getProjectId());
+        values.put(KEY_USER_ID, task.getUserId());
 
         sqLiteDatabase.update(TABLE_TASK, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(task.getId())});
@@ -428,17 +513,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * TaskUserQuery
-     */
-    public void deleteTaskUser() {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.delete(TABLE_USER_TASK, null, null);
-        sqLiteDatabase.close();
-    }
-
-    /**
      * UserProjectQueries
      */
+
+    public void associateUserProject(Long projectId, Long userId) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_USER_ID, userId);
+        values.put(KEY_PROJECT_ID, projectId);
+
+        sqLiteDatabase.insert(TABLE_PROJECT_USER, null, values);
+        sqLiteDatabase.close();
+    }
 
     public void deleteUserProject() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();

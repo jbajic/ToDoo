@@ -46,6 +46,10 @@
         <item name="android:orientation">vertical</item>
     </style>
 
+    <style name="MatchHeightVertical" parent="MatchHeight">
+        <item name="android:orientation">vertical</item>
+    </style>
+
     <style name="MatchParentVerticalCenter" parent="MatchParentVertical">
         <item name="android:gravity">center</item>
     </style>
@@ -62,6 +66,14 @@
     <style name="PinkButtonStyle" parent="WrapContent">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@drawable/round_border</item>
+    </style>
+
+    <style name="ButtonProjectStyle" parent="PinkButtonStyle">
+        <item name="android:layout_marginStart">@dimen/smallPadding1</item>
+        <item name="android:layout_marginEnd">@dimen/smallPadding1</item>
+        <item name="android:textSize">@dimen/smallTextSize13</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
     </style>
 
     <!-- Edit text styles -->

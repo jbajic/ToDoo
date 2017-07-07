@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MatchParentVertical"
+    tools:context="com.jbajic.todoo.AddTaskActivity">
+
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        style="@style/MatchParentVertical"
+        android:padding="@dimen/smallPadding3">
+
+        <LinearLayout style="@style/MatchWidth">
+
+            <TextView
+                style="@style/EditTextAddProject"
+                android:text="@string/name" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/MatchWidth">
+
+            <TextView
+                style="@style/EditTextAddProject"
+                android:text="@string/est_time" />
+
+            <EditText
+                android:id="@+id/et_estTime"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/MatchWidth">
+
+            <TextView
+                style="@style/EditTextAddProject"
+                android:text="@string/member" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/sp_member"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/MatchWidth">
+
+            <TextView
+                style="@style/EditTextAddProject"
+                android:text="@string/category" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/sp_category"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/MatchWidth">
+
+            <TextView
+                style="@style/EditTextAddProject"
+                android:text="@string/description" />
+
+            <EditText
+                android:id="@+id/et_body"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/MatchWidth"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/bt_createTask"
+                style="@style/PinkButtonStyle"
+                android:text="@string/create" />
+
+            <LinearLayout
+                android:id="@+id/ll_createTaskStatus"
+                style="@style/WrapContent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_currentStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/creating_task" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -36,9 +36,11 @@ public final class AppConstants {
     public static final String KEY_COMPLETED = "completed";
     public static final String KEY_MANAGER_ID = "manager_id";
     public static final String KEY_TASKS = "tasks";
+    public static final String KEY_MEMBERS = "members";
     public static final String KEY_ESTIMATED_TIME = "estimated_time";
     public static final String KEY_PROJECT_ID = "project_id";
     public static final String KEY_TASK_ID = "task_id";
+    public static final String KEY_USER_ID = "user_id";
 
     /**
      * API ENDPOINTS
@@ -57,4 +59,5 @@ public final class AppConstants {
      * Extra info
      */
     public static final String EXTRA_KEY_PROJECT = "project";
+    public static final String EXTRA_KEY_PROJECT_ID = "project_id";
 }

@@ -49,7 +49,6 @@ public class SettingsActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.btn_logout:
                 DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
-                databaseHelper.deleteTaskUser();
                 databaseHelper.deleteUserProject();
                 databaseHelper.deleteTasks();
                 databaseHelper.deleteProjects();

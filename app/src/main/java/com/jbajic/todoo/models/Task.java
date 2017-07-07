@@ -1,6 +1,7 @@
 package com.jbajic.todoo.models;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by jure on 15.05.17..
@@ -16,8 +17,10 @@ public class Task implements Serializable {
     private Integer estimatedTime;
     private Long categoryId;
     private Long projectId;
+    private Long userId;
+    private List<Task> taskList;
 
-    public Task(Long id, Long serverId, String name, String body, Boolean completed, Integer estimatedTime, Long categoryId, Long projectId) {
+    public Task(Long id, Long serverId, String name, String body, Boolean completed, Integer estimatedTime, Long categoryId, Long projectId, Long userId) {
         this.id = id;
         this.serverId = serverId;
         this.name = name;
@@ -26,9 +29,10 @@ public class Task implements Serializable {
         this.estimatedTime = estimatedTime;
         this.categoryId = categoryId;
         this.projectId = projectId;
+        this.userId = userId;
     }
 
-    public Task(Long serverId, String name, String body, Boolean completed, Integer estimatedTime, Long categoryId, Long projectId) {
+    public Task(Long serverId, String name, String body, Boolean completed, Integer estimatedTime, Long categoryId, Long projectId, Long userId) {
         this.serverId = serverId;
         this.name = name;
         this.body = body;
@@ -36,6 +40,22 @@ public class Task implements Serializable {
         this.estimatedTime = estimatedTime;
         this.categoryId = categoryId;
         this.projectId = projectId;
+        this.userId = userId;
+    }
+
+    public Task(String name, String body, Boolean completed, Integer estimatedTime, Long categoryId, Long projectId, Long userId) {
+        this.name = name;
+        this.body = body;
+        this.completed = completed;
+        this.estimatedTime = estimatedTime;
+        this.categoryId = categoryId;
+        this.projectId = projectId;
+        this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
     }
 
     public Long getId() {
@@ -96,5 +116,21 @@ public class Task implements Serializable {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
     }
 }

@@ -205,6 +205,15 @@ public class APIService {
                                         projectObject.getLong(AppConstants.KEY_MANAGER_ID)
                                 ));
 
+                                JSONArray members = (JSONArray) projectObject.get(AppConstants.KEY_MEMBERS);
+                                Integer membersLength = members.length();
+                                if (membersLength != 0) {
+                                    for (int j = 0; j < membersLength; ++j) {
+                                        JSONObject memberObject = (JSONObject) members.get(j);
+                                        databaseHelper.associateUserProject(projectId, memberObject.getLong(AppConstants.KEY_ID));
+                                    }
+                                }
+
                                 JSONArray tasks = (JSONArray) projectObject.get(AppConstants.KEY_TASKS);
                                 Integer tasksLength = tasks.length();
                                 if (tasksLength != 0) {
@@ -217,7 +226,8 @@ public class APIService {
                                                 taskObject.getBoolean(AppConstants.KEY_COMPLETED),
                                                 taskObject.getInt(AppConstants.KEY_ESTIMATED_TIME),
                                                 taskObject.isNull(AppConstants.KEY_TASK_ID) ? null : taskObject.getLong(AppConstants.KEY_TASK_ID),
-                                                taskObject.getLong(AppConstants.KEY_PROJECT_ID)
+                                                taskObject.getLong(AppConstants.KEY_PROJECT_ID),
+                                                taskObject.getLong(AppConstants.KEY_USER_ID)
                                         ));
                                     }
                                 }
@@ -328,6 +338,58 @@ public class APIService {
                         requestListener.failed("Project update failed");
                     } else {
                         requestListener.finished("Update successful");
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestListener.failed(error.getMessage());
+            }
+        }, activity);
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void createTask(Task task, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_NAME, task.getName());
+            jsonObject.put(AppConstants.KEY_BODY, task.getBody());
+            jsonObject.put(AppConstants.KEY_COMPLETED, task.getCompleted());
+            jsonObject.put(AppConstants.KEY_ESTIMATED_TIME, task.getEstimatedTime());
+            jsonObject.put(AppConstants.KEY_PROJECT_ID, task.getProjectId());
+            jsonObject.put(AppConstants.KEY_USER_ID, task.getUserId());
+            if(task.getCategoryId() != null) {
+                jsonObject.put(AppConstants.KEY_TASK_ID, task.getCategoryId());
+            }
+            jsonObject.put(AppConstants.KEY_USER_ID, task.getUserId());
+            Log.e("SEND name", task.getName());
+            Log.e("SEND body", task.getBody());
+            Log.e("SEND comp", String.valueOf(task.getCompleted()));
+            Log.e("SEND est", String.valueOf(task.getEstimatedTime()));
+            Log.e("SEND project", String.valueOf(task.getProjectId()));
+            Log.e("SEND user", String.valueOf(task.getUserId()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomJSONAuthObject jsonObjectRequest = new CustomJSONAuthObject(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_CREATE_TASK, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RESPONSE", String.valueOf(response));
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Task creation failed");
+                    } else {
+                        Long projectId = response.getLong(AppConstants.KEY_TASK_ID);
+                        requestListener.finished(String.valueOf(projectId));
                     }
                 } catch (Exception e) {
                     requestListener.failed(e.getMessage());

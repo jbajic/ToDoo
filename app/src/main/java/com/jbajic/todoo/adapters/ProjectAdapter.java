@@ -65,30 +65,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
                 ++activeTasks;
             }
         }
-        Log.e("COMPLETED", String.valueOf(completedTasks));
-        Log.e("Active", String.valueOf(activeTasks));
         double progress = ((double) completedTasks / (completedTasks + activeTasks)) * 100;
-        Log.e("PROGRESS ", String.valueOf(progress));
         holder.pbProjectProgress.setProgress((int) progress);
-//        holder.llProjectInfo.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                Intent intent = new Intent(context, ProjectActivity.class);
-//                intent.putExtra(AppConstants.EXTRA_KEY_PROJECT, project);
-//                context.startActivity(intent);
-//                ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-//                return true;
-//            }
-//        });
-//        holder.llProjectView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    onStartDragListener.onStartDrag(holder);
-//                }
-//                return Boolean.FALSE;
-//            }
-//        });
     }
 
     @Override
@@ -101,7 +79,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         if (side == ItemTouchHelper.END) {
             Log.e("POSITION SWIPED", "RIGHT");
             Intent intent = new Intent(context, ProjectActivity.class);
-            intent.putExtra(AppConstants.EXTRA_KEY_PROJECT, projectsList.get(position));
+            intent.putExtra(AppConstants.EXTRA_KEY_PROJECT_ID, projectsList.get(position).getId());
             context.startActivity(intent);
             ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         } else if (side == ItemTouchHelper.START) {
