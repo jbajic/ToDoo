@@ -127,6 +127,7 @@ public class ProjectActivity extends AppCompatActivity {
 
     @OnClick({R.id.btn_deleteProject, R.id.btn_viewMembers, R.id.btn_addCategory, R.id.btn_addTask})
     public void onViewClicked(View view) {
+        Intent intent;
         switch (view.getId()) {
             case R.id.btn_deleteProject:
                 //delete project
@@ -138,12 +139,17 @@ public class ProjectActivity extends AppCompatActivity {
                 //go to projectMembers
                 break;
             case R.id.btn_addCategory:
-                //
+                intent = new Intent(this, AddTaskActivity.class);
+                intent.putExtra(AppConstants.EXTRA_KEY_PROJECT_ID, project.getId());
+                intent.putExtra(AppConstants.EXTRA_KEY_TASK_TYPE, Task.TaskType.category);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 break;
             case R.id.btn_addTask:
                 //add task
-                Intent intent = new Intent(this, AddTaskActivity.class);
+                intent = new Intent(this, AddTaskActivity.class);
                 intent.putExtra(AppConstants.EXTRA_KEY_PROJECT_ID, project.getId());
+                intent.putExtra(AppConstants.EXTRA_KEY_TASK_TYPE, Task.TaskType.task);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 break;

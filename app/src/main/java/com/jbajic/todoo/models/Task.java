@@ -9,6 +9,11 @@ import java.util.List;
 
 public class Task implements Serializable {
 
+    public enum TaskType {
+        task,
+        category
+    }
+
     private Long id;
     private Long serverId;
     private String name;

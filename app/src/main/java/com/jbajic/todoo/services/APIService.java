@@ -270,11 +270,7 @@ public class APIService {
             jsonObject.put(AppConstants.KEY_CLIENT, project.getClient());
             jsonObject.put(AppConstants.KEY_DEADLINE, project.getDeadline());
             jsonObject.put(AppConstants.KEY_MANAGER_ID, project.getManagerId());
-            Log.e("SEND name", project.getName());
-            Log.e("SEND body", project.getBody());
-            Log.e("SEND client", project.getClient());
-            Log.e("SEND dead", project.getDeadline());
-            Log.e("SEND manager", String.valueOf(project.getManagerId()));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -317,12 +313,7 @@ public class APIService {
             jsonObject.put(AppConstants.KEY_CLIENT, project.getClient());
             jsonObject.put(AppConstants.KEY_DEADLINE, project.getDeadline());
             jsonObject.put(AppConstants.KEY_MANAGER_ID, project.getManagerId());
-            Log.e("SEND id", String.valueOf(project.getServerId()));
-            Log.e("SEND name", project.getName());
-            Log.e("SEND body", project.getBody());
-            Log.e("SEND client", project.getClient());
-            Log.e("SEND dead", project.getDeadline());
-            Log.e("SEND manager", String.valueOf(project.getManagerId()));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -363,17 +354,14 @@ public class APIService {
             jsonObject.put(AppConstants.KEY_COMPLETED, task.getCompleted());
             jsonObject.put(AppConstants.KEY_ESTIMATED_TIME, task.getEstimatedTime());
             jsonObject.put(AppConstants.KEY_PROJECT_ID, task.getProjectId());
-            jsonObject.put(AppConstants.KEY_USER_ID, task.getUserId());
+            if(task.getUserId() != null) {
+                jsonObject.put(AppConstants.KEY_USER_ID, task.getUserId());
+            }
             if(task.getCategoryId() != null) {
                 jsonObject.put(AppConstants.KEY_TASK_ID, task.getCategoryId());
             }
             jsonObject.put(AppConstants.KEY_USER_ID, task.getUserId());
-            Log.e("SEND name", task.getName());
-            Log.e("SEND body", task.getBody());
-            Log.e("SEND comp", String.valueOf(task.getCompleted()));
-            Log.e("SEND est", String.valueOf(task.getEstimatedTime()));
-            Log.e("SEND project", String.valueOf(task.getProjectId()));
-            Log.e("SEND user", String.valueOf(task.getUserId()));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

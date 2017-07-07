@@ -25,7 +25,9 @@
 
         </LinearLayout>
 
-        <LinearLayout style="@style/MatchWidth">
+        <LinearLayout
+            android:id="@+id/ll_estimatedTime"
+            style="@style/MatchWidth">
 
             <TextView
                 style="@style/EditTextAddProject"
@@ -40,7 +42,9 @@
 
         </LinearLayout>
 
-        <LinearLayout style="@style/MatchWidth">
+        <LinearLayout
+            android:id="@+id/ll_membersSp"
+            style="@style/MatchWidth">
 
             <TextView
                 style="@style/EditTextAddProject"
@@ -54,7 +58,9 @@
 
         </LinearLayout>
 
-        <LinearLayout style="@style/MatchWidth">
+        <LinearLayout
+            android:id="@+id/ll_categoriesSp"
+            style="@style/MatchWidth">
 
             <TextView
                 style="@style/EditTextAddProject"

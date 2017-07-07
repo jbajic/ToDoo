@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -50,11 +51,16 @@ public class AddTaskActivity extends AppCompatActivity {
     AppCompatSpinner spMember;
     @InjectView(R.id.et_estTime)
     EditText etEstTime;
+    @InjectView(R.id.ll_membersSp)
+    LinearLayout llMembersSp;
+    @InjectView(R.id.ll_categoriesSp)
+    LinearLayout llCategoriesSp;
 
     private DatabaseHelper databaseHelper;
     private User selectedUser;
     private Task selectedCategory;
-    Project project;
+    private Project project;
+    private Task.TaskType taskType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,44 +79,54 @@ public class AddTaskActivity extends AppCompatActivity {
         databaseHelper = DatabaseHelper.getInstance(this);
         Intent intent = getIntent();
         project = databaseHelper.getProject(intent.getLongExtra(AppConstants.EXTRA_KEY_PROJECT_ID, 0));
+        taskType = (Task.TaskType) intent.getSerializableExtra(AppConstants.EXTRA_KEY_TASK_TYPE);
 
         final List<User> users = databaseHelper.getAllUsersFromProject(project);
-        ArrayAdapter<User> usersAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_spinner_item, users);
-        spMember.setAdapter(usersAdapter);
+        if (Task.TaskType.task == taskType) {
+            Log.e("ADDTASK", "task");
+            ArrayAdapter<User> usersAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_spinner_item, users);
+            spMember.setAdapter(usersAdapter);
 
-        spMember.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedUser = users.get(position);
-            }
+            spMember.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    selectedUser = users.get(position);
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
+                }
+            });
 
-        final List<Task> categories = databaseHelper.getProjectCategoryTask(project.getServerId());
-        ArrayAdapter<Task> categoryAdapter = new ArrayAdapter<Task>(this, android.R.layout.simple_spinner_item, categories);
-        spCategory.setAdapter(categoryAdapter);
+            final List<Task> categories = databaseHelper.getProjectCategoryTask(project.getServerId());
+            ArrayAdapter<Task> categoryAdapter = new ArrayAdapter<Task>(this, android.R.layout.simple_spinner_item, categories);
+            spCategory.setAdapter(categoryAdapter);
 
-        spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedCategory = categories.get(position);
-            }
+            spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    selectedCategory = categories.get(position);
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
+                }
+            });
+        } else {
+            Log.e("ADDTASK", "category");
+
+            llCategoriesSp.setVisibility(View.GONE);
+            llMembersSp.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.bt_createTask)
     public void onViewClicked() {
         String name = String.valueOf(etName.getText());
-        Integer estTime = Integer.valueOf(String.valueOf(etEstTime.getText()));
+        Integer estTime =
+                String.valueOf(etEstTime.getText()).equals("") ? null : Integer.valueOf(String.valueOf(etEstTime.getText()));
         String body = String.valueOf(etBody.getText());
         if (name.isEmpty()) {
             etName.setError(getResources().getString(R.string.error_missing, "Name"));
@@ -118,11 +134,11 @@ public class AddTaskActivity extends AppCompatActivity {
             etEstTime.setError(getResources().getString(R.string.error_missing, "Estimated Time"));
         } else if (body.isEmpty()) {
             etBody.setError(getResources().getString(R.string.error_missing, "Description"));
-        } else if (selectedUser == null) {
+        } else if (selectedUser == null && taskType == Task.TaskType.task) {
             Toast
-                    .makeText(this, getResources().getString(R.string.error_missing, "manager"), Toast.LENGTH_SHORT)
+                    .makeText(this, getResources().getString(R.string.error_missing, "user"), Toast.LENGTH_SHORT)
                     .show();
-        } else if (selectedCategory == null) {
+        } else if (selectedCategory == null && taskType == Task.TaskType.task) {
             Toast
                     .makeText(this, getResources().getString(R.string.error_missing, "category"), Toast.LENGTH_SHORT)
                     .show();
@@ -135,10 +151,10 @@ public class AddTaskActivity extends AppCompatActivity {
                     body,
                     false,
                     estTime,
-                    selectedCategory.getServerId(),
+                    selectedCategory != null ? selectedCategory.getServerId() : null,
                     project.getServerId(),
-                    selectedUser.getId()
-                    );
+                    selectedUser != null ? selectedUser.getId() : null
+            );
             apiService.createTask(task, new RequestListener() {
                 @Override
                 public void failed(String message) {

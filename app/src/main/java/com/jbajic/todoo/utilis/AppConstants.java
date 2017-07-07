@@ -60,4 +60,5 @@ public final class AppConstants {
      */
     public static final String EXTRA_KEY_PROJECT = "project";
     public static final String EXTRA_KEY_PROJECT_ID = "project_id";
+    public static final String EXTRA_KEY_TASK_TYPE = "task_type";
 }
