@@ -31,6 +31,7 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".AddTaskActivity" />
+        <activity android:name=".MembersActivity"></activity>
     </application>
 
 </manifest>

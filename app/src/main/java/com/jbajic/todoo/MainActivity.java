@@ -32,6 +32,7 @@ public class MainActivity extends BaseActivity {
     private ItemTouchHelper itemTouchHelper;
     private List<Project> projectsList;
     private ProjectAdapter projectAdapter;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class MainActivity extends BaseActivity {
 
         setSupportActionBar(myToolbar);
 
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
+        databaseHelper = DatabaseHelper.getInstance(this);
         projectsList = databaseHelper.getAllProjects();
         Log.e("PROJECTS SIZE", String.valueOf(projectsList.size()));
 
@@ -60,8 +61,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        projectAdapter.notifyDataSetChanged();
         super.onResume();
+        projectsList = databaseHelper.getAllProjects();
+        projectAdapter.updateProjectAdapter(projectsList);
     }
 
     @Override

@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.jbajic.todoo.AddProjectActivity;
 import com.jbajic.todoo.ProjectActivity;
 import com.jbajic.todoo.R;
-import com.jbajic.todoo.interfaces.DismissedProjectListener;
 import com.jbajic.todoo.interfaces.ItemTouchHelperAdapter;
 import com.jbajic.todoo.models.Project;
 import com.jbajic.todoo.models.Task;
@@ -59,9 +58,9 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         Integer completedTasks = 0;
         Integer activeTasks = 0;
         for (Task task : project.getTaskArrayList()) {
-            if (task.getCompleted()) {
+            if (task.getCompleted() && task.getCategoryId() != null) {
                 ++completedTasks;
-            } else {
+            } else if(task.getCategoryId() != null) {
                 ++activeTasks;
             }
         }
@@ -89,6 +88,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
             context.startActivity(intent);
             ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         }
+    }
+
+    public void updateProjectAdapter(List<Project> projectsList) {
+        this.projectsList = projectsList;
+        notifyDataSetChanged();
     }
 
     public static class ProjectViewHolder extends RecyclerView.ViewHolder {

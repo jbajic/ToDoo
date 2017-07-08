@@ -178,7 +178,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String selectQuery = "SELECT  * FROM " + TABLE_USER +
                 " INNER JOIN " + TABLE_PROJECT_USER +
                 " ON " + TABLE_USER + "." + KEY_ID + "=" + TABLE_PROJECT_USER + "." + KEY_USER_ID +
-                " WHERE " + TABLE_PROJECT_USER + "." + KEY_PROJECT_ID + "=" + project.getServerId() ;
+                " WHERE " + TABLE_PROJECT_USER + "." + KEY_PROJECT_ID + "=" + project.getServerId();
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                userList.add(new User(
+                        Long.valueOf(cursor.getString(0)),
+                        Long.valueOf(cursor.getString(1)),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        cursor.getString(6),
+                        cursor.getString(7),
+                        cursor.getInt(8) > 0
+                ));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        sqLiteDatabase.close();
+
+        return userList;
+    }
+
+    public List<User> getAllUsersNotFromProject(Project project) {
+        List<User> userList = new ArrayList<User>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_USER +
+                " INNER JOIN " + TABLE_PROJECT_USER +
+                " ON " + TABLE_USER + "." + KEY_ID + "=" + TABLE_PROJECT_USER + "." + KEY_USER_ID +
+                " WHERE " + TABLE_PROJECT_USER + "." + KEY_PROJECT_ID + "!=" + project.getServerId();
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
@@ -240,13 +273,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public void deleteUser(User user) {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.delete(TABLE_USER, KEY_ID + " = ?",
-                new String[]{String.valueOf(user.getId())});
-        sqLiteDatabase.close();
-    }
-
     public void deleteUsers() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.delete(TABLE_USER, null, null);
@@ -294,7 +320,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " WHERE " + KEY_ID + "=" + id;
         Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
 
-        if(cursor != null) {
+        if (cursor != null) {
             cursor.moveToFirst();
             Project project = new Project(
                     Long.valueOf(cursor.getString(0)),
@@ -351,6 +377,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteProject(Project project) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(TABLE_TASK, KEY_PROJECT_ID + " = ?",
+                new String[]{String.valueOf(project.getServerId())});
+        sqLiteDatabase.delete(TABLE_PROJECT_USER, KEY_PROJECT_ID + " = ?",
+                new String[]{String.valueOf(project.getServerId())});
         sqLiteDatabase.delete(TABLE_PROJECT, KEY_ID + " = ?",
                 new String[]{String.valueOf(project.getId())});
         sqLiteDatabase.close();
@@ -481,18 +511,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    public void updateTask(Task task) {
+    public void checkTask(Task task) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_SERVER_ID, task.getServerId());
-        values.put(KEY_NAME, task.getName());
-        values.put(KEY_BODY, task.getBody());
-        values.put(KEY_COMPLETED, task.getCompleted());
-        values.put(KEY_ESTIMATED_TIME, task.getEstimatedTime());
-        values.put(KEY_CATEGORY_ID, task.getCategoryId());
-        values.put(KEY_PROJECT_ID, task.getProjectId());
-        values.put(KEY_USER_ID, task.getUserId());
+        values.put(KEY_COMPLETED, task.getCompleted() ? 1 : 0);
 
         sqLiteDatabase.update(TABLE_TASK, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(task.getId())});
@@ -501,8 +524,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteTask(Task task) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.delete(TABLE_TASK, KEY_ID + " = ?",
-                new String[]{String.valueOf(task.getId())});
+        sqLiteDatabase.delete(TABLE_TASK, KEY_ID + " = ? AND WHERE " + KEY_CATEGORY_ID + " = ?",
+                new String[]{String.valueOf(task.getId()), String.valueOf(task.getServerId())});
         sqLiteDatabase.close();
     }
 
@@ -534,46 +557,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 //    public void associateTaskUser(User )
 
-    public ArrayList<Cursor> getData(String Query){
+    public ArrayList<Cursor> getData(String Query) {
         //get writable database
         SQLiteDatabase sqlDB = this.getWritableDatabase();
-        String[] columns = new String[] { "message" };
+        String[] columns = new String[]{"message"};
         //an array list of cursor to save two cursors one has results from the query
         //other cursor stores error message if any errors are triggered
         ArrayList<Cursor> alc = new ArrayList<Cursor>(2);
-        MatrixCursor Cursor2= new MatrixCursor(columns);
+        MatrixCursor Cursor2 = new MatrixCursor(columns);
         alc.add(null);
         alc.add(null);
 
-        try{
-            String maxQuery = Query ;
+        try {
+            String maxQuery = Query;
             //execute the query results will be save in Cursor c
             Cursor c = sqlDB.rawQuery(maxQuery, null);
 
             //add value to cursor2
-            Cursor2.addRow(new Object[] { "Success" });
+            Cursor2.addRow(new Object[]{"Success"});
 
-            alc.set(1,Cursor2);
+            alc.set(1, Cursor2);
             if (null != c && c.getCount() > 0) {
 
-                alc.set(0,c);
+                alc.set(0, c);
                 c.moveToFirst();
 
-                return alc ;
+                return alc;
             }
             return alc;
-        } catch(SQLException sqlEx){
+        } catch (SQLException sqlEx) {
             Log.d("printing exception", sqlEx.getMessage());
             //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
-            alc.set(1,Cursor2);
+            Cursor2.addRow(new Object[]{"" + sqlEx.getMessage()});
+            alc.set(1, Cursor2);
             return alc;
-        } catch(Exception ex){
+        } catch (Exception ex) {
             Log.d("printing exception", ex.getMessage());
 
             //if any exceptions are triggered save the error message to cursor an return the arraylist
-            Cursor2.addRow(new Object[] { ""+ex.getMessage() });
-            alc.set(1,Cursor2);
+            Cursor2.addRow(new Object[]{"" + ex.getMessage()});
+            alc.set(1, Cursor2);
             return alc;
         }
     }

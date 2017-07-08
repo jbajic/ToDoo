@@ -44,6 +44,6 @@ public class CustomJSONAuthObject extends JsonObjectRequest {
 
     @Override
     public RetryPolicy getRetryPolicy() {
-        return new DefaultRetryPolicy(10000, 1, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        return new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     }
 }

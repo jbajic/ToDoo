@@ -91,12 +91,14 @@ public class APIService {
         volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
     }
 
-    public void register(final String email, final String password, final RequestListener requestListener) {
+    public void register(final String email, final String password, String fName, String lName, final RequestListener requestListener) {
         volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(AppConstants.KEY_EMAIL, email);
             jsonObject.put(AppConstants.KEY_PASSWORD, password);
+            jsonObject.put(AppConstants.KEY_FIRST_NAME, fName);
+            jsonObject.put(AppConstants.KEY_LAST_NAME, lName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -313,6 +315,7 @@ public class APIService {
             jsonObject.put(AppConstants.KEY_CLIENT, project.getClient());
             jsonObject.put(AppConstants.KEY_DEADLINE, project.getDeadline());
             jsonObject.put(AppConstants.KEY_MANAGER_ID, project.getManagerId());
+            jsonObject.put(AppConstants.KEY_COMPLETED, project.getCompleted());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -329,6 +332,81 @@ public class APIService {
                         requestListener.failed("Project update failed");
                     } else {
                         requestListener.finished("Update successful");
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestListener.failed(error.getMessage());
+            }
+        }, activity);
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void deleteProject(Project project, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_ID, project.getServerId());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomJSONAuthObject jsonObjectRequest = new CustomJSONAuthObject(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_DELETE_PROJECT, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RESPONSE", String.valueOf(response));
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Project deletion failed");
+                    } else {
+                        requestListener.finished("Deletion successful");
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestListener.failed(error.getMessage());
+            }
+        }, activity);
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void associateUserProject(User user, Project project, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_USER_ID, project.getServerId());
+            jsonObject.put(AppConstants.KEY_PROJECT_ID, project.getServerId());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomJSONAuthObject jsonObjectRequest = new CustomJSONAuthObject(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_ASSOCIATE_USER_PROJECT, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RESPONSE", String.valueOf(response));
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Project user association failed");
+                    } else {
+                        requestListener.finished("Project user association successful");
                     }
                 } catch (Exception e) {
                     requestListener.failed(e.getMessage());
@@ -378,6 +456,81 @@ public class APIService {
                     } else {
                         Long projectId = response.getLong(AppConstants.KEY_TASK_ID);
                         requestListener.finished(String.valueOf(projectId));
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestListener.failed(error.getMessage());
+            }
+        }, activity);
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void checkTask(Task task, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_ID, task.getServerId());
+            jsonObject.put(AppConstants.KEY_COMPLETED, task.getCompleted());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomJSONAuthObject jsonObjectRequest = new CustomJSONAuthObject(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_CHECK_TASK, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RESPONSE", String.valueOf(response));
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Task update failed");
+                    } else {
+                        requestListener.finished("Update successful");
+                    }
+                } catch (Exception e) {
+                    requestListener.failed(e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestListener.failed(error.getMessage());
+            }
+        }, activity);
+
+        volleyRequestQueue.addToRequestQueue(jsonObjectRequest);
+    }
+
+    public void deleteTask(Task task, final RequestListener requestListener) {
+        volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(AppConstants.KEY_ID, task.getServerId());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        CustomJSONAuthObject jsonObjectRequest = new CustomJSONAuthObject(Request.Method.POST,
+                AppConstants.API_BASE_URL + AppConstants.ENDPOINT_DELETE_TASK, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e("RESPONSE", String.valueOf(response));
+                try {
+                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+                    if (status == 0) {
+                        requestListener.failed("Task deletion failed");
+                    } else {
+                        requestListener.finished("Deleted successfully");
                     }
                 } catch (Exception e) {
                     requestListener.failed(e.getMessage());

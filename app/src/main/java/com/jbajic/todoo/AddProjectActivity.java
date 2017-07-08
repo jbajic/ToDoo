@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -53,10 +55,15 @@ public class AddProjectActivity extends BaseActivity {
     LinearLayout llCreateProjectStatus;
     @InjectView(R.id.tv_currentStatus)
     TextView tvCurrentStatus;
+    @InjectView(R.id.ch_projectCompleted)
+    CheckBox chProjectCompleted;
+    @InjectView(R.id.ll_projectCompleted)
+    LinearLayout llProjectCompleted;
 
     private User selectedUser;
     private DatabaseHelper databaseHelper;
-    Project project;
+    private Project project;
+    private Boolean isCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,7 @@ public class AddProjectActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        isCompleted = Boolean.FALSE;
         databaseHelper = DatabaseHelper.getInstance(this);
         final List<User> users = databaseHelper.getAllUsers();
         ArrayAdapter<User> adapter = new ArrayAdapter<User>(this, android.R.layout.simple_spinner_item, users);
@@ -98,6 +106,16 @@ public class AddProjectActivity extends BaseActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+        chProjectCompleted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    isCompleted = Boolean.TRUE;
+                } else {
+                    isCompleted = Boolean.FALSE;
+                }
             }
         });
     }
@@ -185,6 +203,7 @@ public class AddProjectActivity extends BaseActivity {
                         project.setClient(client);
                         project.setDeadline(deadline);
                         project.setManagerId(selectedUser.getId());
+                        project.setCompleted(isCompleted);
                         apiService.updateProject(project, new RequestListener() {
                             @Override
                             public void failed(String message) {

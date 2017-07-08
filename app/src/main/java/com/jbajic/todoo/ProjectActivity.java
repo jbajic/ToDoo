@@ -1,21 +1,28 @@
 package com.jbajic.todoo;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jbajic.todoo.adapters.TaskExpandableAdapter;
 import com.jbajic.todoo.helpers.DatabaseHelper;
+import com.jbajic.todoo.interfaces.RequestListener;
 import com.jbajic.todoo.models.Project;
 import com.jbajic.todoo.models.Task;
+import com.jbajic.todoo.services.APIService;
 import com.jbajic.todoo.utilis.AppConstants;
 
 import java.util.List;
@@ -24,7 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class ProjectActivity extends AppCompatActivity {
+public class ProjectActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener {
 
     @InjectView(R.id.my_toolbar)
     Toolbar myToolbar;
@@ -113,6 +120,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         taskExpandableAdapter = new TaskExpandableAdapter(this, categoryList);
         elvTasks.setAdapter(taskExpandableAdapter);
+        elvTasks.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -131,12 +139,49 @@ public class ProjectActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btn_deleteProject:
                 //delete project
-                databaseHelper.deleteProject(project);
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Delete project")
+                        .setMessage("Are you sure you want to delete this project?")
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog, int which) {
+                                APIService apiService = APIService.getInstance(ProjectActivity.this);
+
+                                apiService.deleteProject(project, new RequestListener() {
+                                    @Override
+                                    public void failed(String message) {
+                                        Toast
+                                                .makeText(ProjectActivity.this, message, Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+
+                                    @Override
+                                    public void finished(String message) {
+                                        databaseHelper.deleteProject(project);
+                                        dialog.cancel();
+                                        ProjectActivity.this.finish();
+                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                                    }
+                                });
+//                                databaseHelper.deleteProject(project);
+//                                finish();
+//                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+//                                dialog.cancel();
+                            }
+                        })
+                        .show();
                 break;
             case R.id.btn_viewMembers:
-                //go to projectMembers
+                intent = new Intent(this, MembersActivity.class);
+                intent.putExtra(AppConstants.EXTRA_KEY_PROJECT_ID, project.getId());
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 break;
             case R.id.btn_addCategory:
                 intent = new Intent(this, AddTaskActivity.class);
@@ -154,6 +199,27 @@ public class ProjectActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 break;
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+            int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+            int childPosition = ExpandableListView.getPackedPositionChild(id);
+
+            // You now have everything that you would as if this was an OnChildClickListener()
+            // Add your logic here.
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Task description")
+                    .setMessage(categoryList.get(groupPosition).getTaskList().get(childPosition).getBody())
+                    .setCancelable(true)
+                    .show();
+
+            // Return true as we are handling the event.
+            return true;
+        }
+
+        return false;
     }
 
 }

@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_categoryItem"
     style="@style/MatchParent">
 
     <TextView
         android:id="@+id/tv_categoryName"
-        style="@style/WrapContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
         android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textSize="@dimen/mediumTextSize13"
-        tools:text="Category1" />
+        tools:text="Category" />
 
     <TextView
         android:id="@+id/tv_numberOfTasks"
-        style="@style/WrapContent"
-        android:layout_alignParentEnd="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
         android:textSize="@dimen/mediumTextSize13"
         tools:text="25" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/btn_deleteCategory"
+        style="@style/PinkButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:text="@string/delete" />
+
+
+</LinearLayout>

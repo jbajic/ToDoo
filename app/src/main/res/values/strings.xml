@@ -45,4 +45,11 @@
     <string name="member">Member</string>
     <string name="category">Category</string>
     <string name="creating_task">Creating task...</string>
+    <string name="item_description">%1$s description</string>
+    <string name="completed">Completed</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="example_first_name">Pero</string>
+    <string name="example_last_name">Peric</string>
+    <string name="add">Add</string>
 </resources>

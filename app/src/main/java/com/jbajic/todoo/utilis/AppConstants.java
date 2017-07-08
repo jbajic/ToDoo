@@ -53,7 +53,9 @@ public final class AppConstants {
     public static final String ENDPOINT_UPDATE_PROJECT = "update-project";
     public static final String ENDPOINT_DELETE_PROJECT = "delete-project";
     public static final String ENDPOINT_CREATE_TASK = "create-task";
+    public static final String ENDPOINT_CHECK_TASK = "check-task";
     public static final String ENDPOINT_DELETE_TASK = "delete-task";
+    public static final String ENDPOINT_ASSOCIATE_USER_PROJECT = "associate-user-project";
 
     /**
      * Extra info

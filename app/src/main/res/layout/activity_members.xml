@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MatchParentVertical"
-    tools:context="com.jbajic.todoo.MainActivity">
+    tools:context="com.jbajic.todoo.MembersActivity">
 
     <include layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_projects"
+        android:id="@+id/rv_members"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

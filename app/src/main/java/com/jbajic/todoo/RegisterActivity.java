@@ -2,11 +2,8 @@ package com.jbajic.todoo;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +32,10 @@ public class RegisterActivity extends BaseActivity {
     Toolbar myToolbar;
     @InjectView(R.id.pb_progress_bar)
     ProgressBar pbProgressBar;
+    @InjectView(R.id.et_firstName)
+    EditText etFirstName;
+    @InjectView(R.id.et_lastName)
+    EditText etLastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,18 @@ public class RegisterActivity extends BaseActivity {
     @OnClick(R.id.bt_register)
     public void onViewClicked() {
         String email = String.valueOf(etEmail.getText());
+        String firstName = String.valueOf(etFirstName.getText());
+        String lastName = String.valueOf(etLastName.getText());
         String password = String.valueOf(etPassword.getText());
         String passwordConfirm = String.valueOf(etPasswordConfirm.getText());
         if (email.isEmpty()) {
             etEmail.setError(getResources().getString(R.string.error_missing, "Email"));
         } else if (password.isEmpty()) {
-            etPassword.setError(getResources().getString(R.string.error_missing, "Password"));
+            etPassword.setError(getResources().getString(R.string.error_missing, "First name"));
+        } else if (firstName.isEmpty()) {
+            etFirstName.setError(getResources().getString(R.string.error_missing, "Password"));
+        } else if (lastName.isEmpty()) {
+            etLastName.setError(getResources().getString(R.string.error_missing, "Last name"));
         } else if (passwordConfirm.isEmpty()) {
             etPasswordConfirm.setError(getResources().getString(R.string.error_missing, "Password confirmation"));
         } else if (!password.equals(passwordConfirm)) {
@@ -69,7 +76,7 @@ public class RegisterActivity extends BaseActivity {
             pbProgressBar.setVisibility(View.VISIBLE);
             btRegister.setVisibility(View.GONE);
             APIService registerService = APIService.getInstance(this);
-            registerService.register(email, password, new RequestListener() {
+            registerService.register(email, password, firstName, lastName, new RequestListener() {
                 @Override
                 public void failed(String message) {
                     Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();

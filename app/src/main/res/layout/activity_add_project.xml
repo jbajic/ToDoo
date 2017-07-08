@@ -6,7 +6,8 @@
 
     <include layout="@layout/toolbar" />
 
-    <LinearLayout style="@style/MatchParentVertical"
+    <LinearLayout
+        style="@style/MatchParentVertical"
         android:padding="@dimen/smallPadding3">
 
         <LinearLayout style="@style/MatchWidth">
@@ -75,6 +76,21 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_projectCompleted"
+            style="@style/MatchWidth">
+
+            <TextView
+                style="@style/EditTextAddProject"
+                android:text="@string/completed" />
+
+            <CheckBox
+                android:id="@+id/ch_projectCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
         <LinearLayout style="@style/MatchWidth">
 
             <TextView
@@ -101,8 +117,8 @@
             <LinearLayout
                 android:id="@+id/ll_createProjectStatus"
                 style="@style/WrapContent"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ProgressBar
                     android:layout_width="wrap_content"
@@ -112,7 +128,7 @@
                     android:id="@+id/tv_currentStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/creating_project"/>
+                    android:text="@string/creating_project" />
 
             </LinearLayout>
 
