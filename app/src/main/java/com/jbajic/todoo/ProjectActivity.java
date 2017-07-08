@@ -92,7 +92,8 @@ public class ProjectActivity extends AppCompatActivity implements AdapterView.On
         //set notification
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        String[] dateString = project.getDeadline().split(".");
+        String[] dateString = project.getDeadline().split("\\.");
+        Log.e("ARRAY", String.valueOf(dateString.length));
         GregorianCalendar gregorianCalendar = (GregorianCalendar) GregorianCalendar.getInstance();
         gregorianCalendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(dateString[0]));
         gregorianCalendar.add(Calendar.MONTH, Integer.parseInt(dateString[1]));
@@ -102,7 +103,7 @@ public class ProjectActivity extends AppCompatActivity implements AdapterView.On
         Intent deadLineIntent = new Intent(this, DeadlineReceiver.class);
 //        deadLineIntent.putExtra(AppConstants.EXTRA_KEY_PROJECT_ID, project.getId());
         PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, deadLineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP,  gregorianCalendar.getTimeInMillis(), broadcast);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, gregorianCalendar.getTimeInMillis(), broadcast);
     }
 
 
