@@ -24,8 +24,8 @@ public class SettingsActivity extends BaseActivity {
     Toolbar myToolbar;
     @InjectView(R.id.btn_logout)
     Button btnLogout;
-    @InjectView(R.id.btn_database)
-    Button btnDatabase;
+//    @InjectView(R.id.btn_database)
+//    Button btnDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class SettingsActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.btn_logout, R.id.btn_database})
+    @OnClick(R.id.btn_logout)
     public void onViewClicked(View view) {
         Intent intent;
         switch (view.getId()) {
@@ -63,11 +63,11 @@ public class SettingsActivity extends BaseActivity {
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 break;
-            case R.id.btn_database:
-                intent = new Intent(this, AndroidDatabaseManager.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-                break;
+//            case R.id.btn_database:
+//                intent = new Intent(this, AndroidDatabaseManager.class);
+//                startActivity(intent);
+//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+//                break;
         }
     }
 

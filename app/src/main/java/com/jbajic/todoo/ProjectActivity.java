@@ -1,9 +1,13 @@
 package com.jbajic.todoo;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +27,11 @@ import com.jbajic.todoo.interfaces.RequestListener;
 import com.jbajic.todoo.models.Project;
 import com.jbajic.todoo.models.Task;
 import com.jbajic.todoo.services.APIService;
+import com.jbajic.todoo.services.DeadlineReceiver;
 import com.jbajic.todoo.utilis.AppConstants;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -82,6 +89,20 @@ public class ProjectActivity extends AppCompatActivity implements AdapterView.On
         project = DatabaseHelper.getInstance(this).getProject(intent.getLongExtra(AppConstants.EXTRA_KEY_PROJECT_ID, 0));
         categoryList = databaseHelper.getProjectCategoryTask(project.getServerId());
 
+        //set notification
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        String[] dateString = project.getDeadline().split(".");
+        GregorianCalendar gregorianCalendar = (GregorianCalendar) GregorianCalendar.getInstance();
+        gregorianCalendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(dateString[0]));
+        gregorianCalendar.add(Calendar.MONTH, Integer.parseInt(dateString[1]));
+        gregorianCalendar.add(Calendar.YEAR, Integer.parseInt(dateString[2]));
+
+        Log.e("REGISTER", "RECEIVER");
+        Intent deadLineIntent = new Intent(this, DeadlineReceiver.class);
+//        deadLineIntent.putExtra(AppConstants.EXTRA_KEY_PROJECT_ID, project.getId());
+        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, deadLineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,  gregorianCalendar.getTimeInMillis(), broadcast);
     }
 
 

@@ -31,7 +31,8 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".AddTaskActivity" />
-        <activity android:name=".MembersActivity"></activity>
+        <activity android:name=".MembersActivity" />
+        <receiver android:name=".services.DeadlineReceiver" android:enabled="true"/>
     </application>
 
 </manifest>

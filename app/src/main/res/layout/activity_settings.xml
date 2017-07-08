@@ -17,12 +17,12 @@
             style="@style/PinkButtonStyle"
             android:text="@string/logout"/>
 
-        <Button
-            android:id="@+id/btn_database"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/PinkButtonStyle"
-            android:text="DATABASE"/>
+        <!--<Button-->
+            <!--android:id="@+id/btn_database"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--style="@style/PinkButtonStyle"-->
+            <!--android:text="DATABASE"/>-->
 
     </LinearLayout>
 
