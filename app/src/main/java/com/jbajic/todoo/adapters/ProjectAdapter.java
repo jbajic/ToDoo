@@ -58,9 +58,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
         Integer completedTasks = 0;
         Integer activeTasks = 0;
         for (Task task : project.getTaskArrayList()) {
-            if (task.getCompleted() && task.getCategoryId() != null) {
+            Log.e("Test", String.valueOf(task.getCategoryId()));
+            if (task.getCompleted() && task.getCategoryId() != 0) {
                 ++completedTasks;
-            } else if(task.getCategoryId() != null) {
+            } else if(task.getCategoryId() != 0) {
                 ++activeTasks;
             }
         }

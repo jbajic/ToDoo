@@ -121,7 +121,7 @@ public class APIService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                requestListener.failed(error.getMessage());
+                requestListener.failed("Server error please try again");
             }
         });
 
@@ -229,7 +229,7 @@ public class APIService {
                                                 taskObject.getInt(AppConstants.KEY_ESTIMATED_TIME),
                                                 taskObject.isNull(AppConstants.KEY_TASK_ID) ? null : taskObject.getLong(AppConstants.KEY_TASK_ID),
                                                 taskObject.getLong(AppConstants.KEY_PROJECT_ID),
-                                                taskObject.getLong(AppConstants.KEY_USER_ID)
+                                                taskObject.isNull(AppConstants.KEY_USER_ID) ? null: taskObject.getLong(AppConstants.KEY_USER_ID)
                                         ));
                                     }
                                 }
@@ -389,7 +389,7 @@ public class APIService {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(AppConstants.KEY_USER_ID, project.getServerId());
+            jsonObject.put(AppConstants.KEY_USER_ID, user.getServerId());
             jsonObject.put(AppConstants.KEY_PROJECT_ID, project.getServerId());
 
         } catch (JSONException e) {
@@ -424,7 +424,8 @@ public class APIService {
 
     public void createTask(Task task, final RequestListener requestListener) {
         volleyRequestQueue = VolleyRequestQueue.getInstance(activity);
-
+        Log.e("CREAtE TAS", task.getName());
+        Log.e("CREAtE TAS", String.valueOf(task.getCategoryId()));
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(AppConstants.KEY_NAME, task.getName());
@@ -435,7 +436,9 @@ public class APIService {
             if(task.getUserId() != null) {
                 jsonObject.put(AppConstants.KEY_USER_ID, task.getUserId());
             }
+            Log.e("CATE ID", String.valueOf(task.getCategoryId()));
             if(task.getCategoryId() != null) {
+                Log.e("DIFFRENT ID", String.valueOf(task.getCategoryId()));
                 jsonObject.put(AppConstants.KEY_TASK_ID, task.getCategoryId());
             }
             jsonObject.put(AppConstants.KEY_USER_ID, task.getUserId());
@@ -525,16 +528,22 @@ public class APIService {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e("RESPONSE", String.valueOf(response));
-                try {
-                    Integer status = response.getInt(AppConstants.KEY_STATUS);
-                    if (status == 0) {
-                        requestListener.failed("Task deletion failed");
-                    } else {
+//                try {
+//                    Log.e("RES STATUS", "BEFORE");
+//                    Integer status = response.getInt(AppConstants.KEY_STATUS);
+//                    Log.e("RES STATUS", String.valueOf(status));
+//                    if (status.equals(0)) {
+//                        Log.e("RES STATUS", "ALES GUT");
+//
+//                        requestListener.failed("Task deletion failed");
+//                    } else {
                         requestListener.finished("Deleted successfully");
-                    }
-                } catch (Exception e) {
-                    requestListener.failed(e.getMessage());
-                }
+//                        Log.e("RES STATUS", "NICHTS GUT");
+//                    }
+//                } catch (Exception e) {
+//                    Log.e("DELETTE task API", e.getMessage());
+//                    requestListener.failed(e.getMessage());
+//                }
             }
         }, new Response.ErrorListener() {
             @Override

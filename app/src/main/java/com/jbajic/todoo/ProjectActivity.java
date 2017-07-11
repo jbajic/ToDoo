@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class ProjectActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener {
+public class ProjectActivity extends AppCompatActivity{
 
     @InjectView(R.id.my_toolbar)
     Toolbar myToolbar;
@@ -142,7 +142,9 @@ public class ProjectActivity extends AppCompatActivity implements AdapterView.On
 
         taskExpandableAdapter = new TaskExpandableAdapter(this, categoryList);
         elvTasks.setAdapter(taskExpandableAdapter);
-        elvTasks.setOnItemLongClickListener(this);
+//        elvTasks.setOnItemLongClickListener(this);
+//        elvTasks.setOnGroupClickListener(this);
+//        elvTasks.setOnChildClickListener(this);
     }
 
     @Override
@@ -223,25 +225,50 @@ public class ProjectActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-            int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-            int childPosition = ExpandableListView.getPackedPositionChild(id);
+//    @Override
+//    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//        if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+//            int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+//            int childPosition = ExpandableListView.getPackedPositionChild(id);
+//
+//            // You now have everything that you would as if this was an OnChildClickListener()
+//            // Add your logic here.
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setTitle("Task description")
+//                    .setMessage(categoryList.get(groupPosition).getTaskList().get(childPosition).getBody())
+//                    .setCancelable(true)
+//                    .show();
+//
+//            // Return true as we are handling the event.
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
-            // You now have everything that you would as if this was an OnChildClickListener()
-            // Add your logic here.
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Task description")
-                    .setMessage(categoryList.get(groupPosition).getTaskList().get(childPosition).getBody())
-                    .setCancelable(true)
-                    .show();
+//    @Override
+//    public boolean onGroupClick(ExpandableListView parent, View v, final int groupPosition, long id) {
+//        if(v.getId() == R.id.btn_deleteCategory) {
+//            APIService apiService = APIService.getInstance(this);
+//
+//            apiService.deleteTask(categoryList.get(groupPosition), new RequestListener() {
+//                @Override
+//                public void failed(String message) {
+//                    Toast
+//                            .makeText(ProjectActivity.this, message, Toast.LENGTH_SHORT)
+//                            .show();
+//                }
+//
+//                @Override
+//                public void finished(String message) {
+//                    categoryList.remove(categoryList.get(groupPosition));
+//                    DatabaseHelper.getInstance(ProjectActivity.this).deleteTask(categoryList.get(groupPosition));
+//                    taskExpandableAdapter.updateExpandableListView(categoryList);
+//                }
+//            });
+//        }
+//        return false;
+//    }
 
-            // Return true as we are handling the event.
-            return true;
-        }
-
-        return false;
-    }
 
 }

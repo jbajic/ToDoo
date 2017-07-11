@@ -189,6 +189,7 @@ public class AddProjectActivity extends BaseActivity {
                                 Long projectId = Long.valueOf(message);
                                 project.setServerId(projectId);
                                 databaseHelper.addProject(project);
+                                databaseHelper.associateUserProject(projectId, selectedUser.getServerId());
                                 AddProjectActivity.this.finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                             }
@@ -213,6 +214,7 @@ public class AddProjectActivity extends BaseActivity {
                             @Override
                             public void finished(String message) {
                                 databaseHelper.updateProject(project);
+                                databaseHelper.associateUserProject(project.getServerId(), selectedUser.getServerId());
                                 AddProjectActivity.this.finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                             }

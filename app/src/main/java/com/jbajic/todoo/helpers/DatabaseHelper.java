@@ -206,20 +206,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<User> getAllUsersNotFromProject(Project project) {
+        List<User> projectUserList = new ArrayList<User>();
         List<User> userList = new ArrayList<User>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_USER +
+        String getProjectUsers = "SELECT  * FROM " + TABLE_USER +
                 " INNER JOIN " + TABLE_PROJECT_USER +
                 " ON " + TABLE_USER + "." + KEY_ID + "=" + TABLE_PROJECT_USER + "." + KEY_USER_ID +
-                " WHERE " + TABLE_PROJECT_USER + "." + KEY_PROJECT_ID + "!=" + project.getServerId();
-
+                " WHERE " + TABLE_PROJECT_USER + "." + KEY_PROJECT_ID + "=" + project.getServerId();
+        // Select All Query
+        String getAllUsers = "SELECT * FROM " + TABLE_USER;
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
+        Cursor cursor = sqLiteDatabase.rawQuery(getProjectUsers, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                userList.add(new User(
+                projectUserList.add(new User(
                         Long.valueOf(cursor.getString(0)),
                         Long.valueOf(cursor.getString(1)),
                         cursor.getString(2),
@@ -230,8 +232,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(7),
                         cursor.getInt(8) > 0
                 ));
+                Log.e("USER", String.valueOf(projectUserList.get(projectUserList.size() - 1).getId()));
+
             } while (cursor.moveToNext());
         }
+        Cursor getAllProjectCursor = sqLiteDatabase.rawQuery(getAllUsers, null);
+
+        if (getAllProjectCursor.moveToFirst()) {
+            do {
+                Boolean isUserInProject = Boolean.FALSE;
+                for (User user : projectUserList) {
+                    if (user.getServerId().equals(Long.valueOf(getAllProjectCursor.getString(0)))) {
+                        isUserInProject = Boolean.TRUE;
+                        break;
+                    }
+                }
+                if (!isUserInProject) {
+                    userList.add(new User(
+                            Long.valueOf(getAllProjectCursor.getString(0)),
+                            Long.valueOf(getAllProjectCursor.getString(1)),
+                            getAllProjectCursor.getString(2),
+                            getAllProjectCursor.getString(3),
+                            getAllProjectCursor.getString(4),
+                            getAllProjectCursor.getString(5),
+                            getAllProjectCursor.getString(6),
+                            getAllProjectCursor.getString(7),
+                            getAllProjectCursor.getInt(8) > 0
+                    ));
+                    Log.e("USER", String.valueOf(userList.get(userList.size() - 1).getId()));
+                }
+            } while (getAllProjectCursor.moveToNext());
+        }
+        Log.e("NUMBEROFLLUSERS", String.valueOf(userList.size()));
+
+        getAllProjectCursor.close();
         cursor.close();
         sqLiteDatabase.close();
 
@@ -524,8 +558,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteTask(Task task) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.delete(TABLE_TASK, KEY_ID + " = ? AND WHERE " + KEY_CATEGORY_ID + " = ?",
-                new String[]{String.valueOf(task.getId()), String.valueOf(task.getServerId())});
+        if (task.getCategoryId() == null) {
+            Log.e("IS CATE", "JAA");
+            sqLiteDatabase.delete(TABLE_TASK, KEY_ID + "=? OR " + KEY_CATEGORY_ID + "=?",
+                    new String[]{String.valueOf(task.getId()), String.valueOf(task.getServerId())});
+        } else {
+            Log.e("IS CATE", "NAA");
+            sqLiteDatabase.delete(TABLE_TASK, KEY_ID + "=? AND " + KEY_CATEGORY_ID + "=?",
+                    new String[]{String.valueOf(task.getId()), String.valueOf(task.getCategoryId())});
+        }
+
         sqLiteDatabase.close();
     }
 
@@ -551,7 +593,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteUserProject() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.delete(TABLE_PROJECT_USER, null, null);
+        sqLiteDatabase.execSQL("DELETE FROM " + TABLE_PROJECT_USER);
         sqLiteDatabase.close();
     }
 

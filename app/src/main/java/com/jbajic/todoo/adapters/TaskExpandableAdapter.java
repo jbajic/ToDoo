@@ -115,8 +115,8 @@ public class TaskExpandableAdapter extends BaseExpandableListAdapter {
 
                     @Override
                     public void finished(String message) {
-                        categoryList.remove(getGroup(groupPosition));
                         DatabaseHelper.getInstance(context).deleteTask(getGroup(groupPosition));
+                        categoryList.remove(getGroup(groupPosition));
                         updateExpandableListView(categoryList);
                     }
                 });
@@ -149,7 +149,7 @@ public class TaskExpandableAdapter extends BaseExpandableListAdapter {
         }
 
         taskViewHolder.tvTaskName.setText(getChild(groupPosition, childPosition).getName());
-        StringBuilder estimatedTimeString = new StringBuilder();
+        final StringBuilder estimatedTimeString = new StringBuilder();
         estimatedTimeString.append(getChild(groupPosition, childPosition).getEstimatedTime()).append(" h");
         taskViewHolder.tvEstimatedTime.setText(estimatedTimeString.toString());
         taskViewHolder.cbTaskCompleted.setChecked(getChild(groupPosition, childPosition).getCompleted());
@@ -185,6 +185,7 @@ public class TaskExpandableAdapter extends BaseExpandableListAdapter {
                 apiService.deleteTask(getChild(groupPosition, childPosition), new RequestListener() {
                     @Override
                     public void failed(String message) {
+                        Log.e("DELETE TASK MES FAILED", message);
                         Toast
                                 .makeText(context, message, Toast.LENGTH_SHORT)
                                 .show();
@@ -192,8 +193,9 @@ public class TaskExpandableAdapter extends BaseExpandableListAdapter {
 
                     @Override
                     public void finished(String message) {
-                        categoryList.get(groupPosition).getTaskList().remove(getChild(groupPosition, childPosition));
+                        Log.e("DELETE TASK MES", message);
                         DatabaseHelper.getInstance(context).deleteTask(getChild(groupPosition, childPosition));
+                        categoryList.get(groupPosition).getTaskList().remove(categoryList.get(groupPosition).getTaskList().get(childPosition));
                         updateExpandableListView(categoryList);
                     }
                 });
@@ -212,6 +214,7 @@ public class TaskExpandableAdapter extends BaseExpandableListAdapter {
         });
         return convertView;
     }
+
 
 //    private void showRemoveImagePopup(View view, final Integer groupPosition, final Integer childPosition) {
 //        final PopupMenu popup = new PopupMenu(context, view);
@@ -235,10 +238,9 @@ public class TaskExpandableAdapter extends BaseExpandableListAdapter {
 //    }
 
     public void updateExpandableListView(List<Task> categoryList) {
-        if (categoryList.size() != getGroupCount()) {
-            this.categoryList = categoryList;
-            notifyDataSetChanged();
-        }
+//        if (categoryList.size() != getGroupCount()) {
+        this.categoryList = categoryList;
+//        }
 //        notifyAll();
         notifyDataSetChanged();
     }
